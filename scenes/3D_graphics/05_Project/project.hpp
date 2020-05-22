@@ -6,7 +6,7 @@
 
 
 // GUI parameters
-struct gui_scene
+struct gui_scene_structure
 {
     float height = 0.6f;
     float scaling = 3.0f;
@@ -14,18 +14,13 @@ struct gui_scene
     float persistency = 0.4f;
 };
 
-struct surface
+struct terrain
 {
-    float angle_of_view;
-    float image_aspect;
-    float z_near;
-    float z_far;
-
-    perspective_structure();
-    perspective_structure(float angle_of_view, float image_aspect, float z_near, float z_far);
-
-    mat4 matrix() const;
-    mat4 matrix_inverse() const;
+    size_t N; // Number of blocks N x N x N
+    std::vector<std::vector<std::vector<int>>> blocks; // 3D array that contains the type of block in the place
+    terrain(size_t N_);
+    void create_terrain();
+    void draw_terrain();
 };
 
 struct scene_model : scene_base
@@ -45,12 +40,13 @@ struct scene_model : scene_base
     void setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui);
     void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui);
 
+    gui_scene_structure gui_scene;
+    void set_gui();
 
     // visual representation of a surface
     //  Surface is a class attribute to be initialized in setup_data and used in frame_draw
     vcl::mesh_drawable surface;
     vcl::mesh_drawable sphere;
-
 
 };
 

@@ -64,4 +64,25 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
 
 }
 
+terrain::terrain(size_t N_)
+{
+    N = N_;
+    // Inialize vector with blocks type 1
+    std::vector<std::vector<std::vector<int>>> blocks(N, std::vector<std::vector<int>>(N, std::vector<int>(N, 1)));
+}
+
+void terrain::create_terrain()
+{
+    // TODO
+}
+
+void terrain::draw_terrain()
+{
+    // TODO
+}
+
+void scene_model::set_gui()
+{
+    // TODO
+}
 #endif

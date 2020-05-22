@@ -1,3 +1,0 @@
-/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/build/CMakeFiles/rebuild_cache.dir
-/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/build/CMakeFiles/pgm.dir
-/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/build/CMakeFiles/edit_cache.dir

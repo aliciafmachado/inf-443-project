@@ -32,7 +32,7 @@ file(
     scenes/*.[ch]pp
     scenes/*.glsl
     )
-add_executable(pgm ${source_files} scenes/3D_graphics/01_modeling/modeling.hpp scenes/3D_graphics/05_Project/project.cpp scenes/3D_graphics/05_Project/project.hpp)
+add_executable(pgm ${source_files} scenes/3D_graphics/05_Project/project.cpp scenes/3D_graphics/05_Project/project.hpp)
 
 
 if(UNIX)
