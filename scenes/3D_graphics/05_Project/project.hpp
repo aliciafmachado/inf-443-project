@@ -12,15 +12,16 @@ struct gui_scene_structure
     float scaling = 3.0f;
     int octave = 7;
     float persistency = 0.4f;
+    float frequency = 2.0f;
+    float min_noise = 0.7f;
 };
 
-struct terrain
+struct grid
 {
     size_t N; // Number of blocks N x N x N
     std::vector<std::vector<std::vector<int>>> blocks; // 3D array that contains the type of block in the place
-    terrain(size_t N_);
-    void create_terrain();
-    void draw_terrain();
+    void create_grid(gui_scene_structure gui);
+    void draw_grid(std::map<std::string,GLuint>& shaders);
 };
 
 struct scene_model : scene_base
@@ -40,14 +41,12 @@ struct scene_model : scene_base
     void setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui);
     void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui);
 
+    vcl::mesh_drawable sphere;
+
     gui_scene_structure gui_scene;
     void set_gui();
 
-    // visual representation of a surface
-    //  Surface is a class attribute to be initialized in setup_data and used in frame_draw
-    vcl::mesh_drawable surface;
-    vcl::mesh_drawable sphere;
-
+    grid g;
 };
 
 #endif
