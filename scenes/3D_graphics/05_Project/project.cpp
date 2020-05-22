@@ -2,6 +2,12 @@
 
 #ifdef SCENE_3D_PROJECT
 
+#define GRASS 0
+#define DIRT 1
+#define STONE 2
+
+
+
 // Add vcl namespace within the current one - Allows to use function from vcl library without explicitely preceeding their name with vcl::
 using namespace vcl;
 
@@ -9,8 +15,9 @@ const size_t Nx = 50; // Number of blocks in x
 const size_t Ny = 40; // Number of blocks in y
 const size_t Nz = 30; // Number of blocks in z
 const float v = 1 / (float) Nx; // Minimum step (Divide by the biggest N)
-mesh create_block(float len);
 
+mesh create_block(float len);
+mesh_drawable update_block(mesh_drawable block, float height);
 /** This function is called before the beginning of the animation loop
     It is used to initialize all part-specific data */
 void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui)
@@ -22,7 +29,6 @@ void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_struct
     sphere.shader = shaders["mesh"]; // associate default shader to sphere
 
     block = create_block(0.01f);
-    block.uniform.color = {1,1,0};
     block.shader = shaders["mesh"];
 
     // Setup initial camera mode and position
@@ -48,6 +54,7 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
             for (auto &value : line){
                 if (value == 1){
                     block.uniform.transform.translation   = {cont_x, cont_y, cont_z};
+                    block = update_block(block, cont_z);
                     draw(block, scene.camera);
                 }
                 cont_x += v;
@@ -109,10 +116,30 @@ void scene_model::set_gui()
     ImGui::SliderFloat("Min noise", &gui_scene.min_noise, min_noise_min, min_noise_max);
 }
 
-mesh create_block(float len){
+mesh_drawable update_block(mesh_drawable block, float height) {
+
+
+    block.uniform.color = {0,height*2,0};
+
+    /*
+    // Applying different textures
+    if(height > 0.5) {
+        block.uniform.color = {0,1,0};
+    }
+
+    else if(height > 0.2) {
+        block.uniform.color = {0.8,0.8,0};
+    }
+
+    else if(height > -1) {
+        block.uniform.color = {0.1,0.1,0.1};
+    }*/
+
+    return block;
+}
+
+mesh create_block(float l){
     mesh block;
-    
-    float l = len;
 
     const vec3 p000 = {-l,-l,-l};
     const vec3 p001 = {-l,-l, l};
@@ -137,6 +164,7 @@ mesh create_block(float len){
             {8,11,10}, {8,10,9}, {17,16,19}, {17,19,18},
             {23,22,21}, {23,21,20}, {13,12,14}, {13,14,15}
     };
+
 
     return block;
 
