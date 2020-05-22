@@ -4,6 +4,30 @@
 
 #ifdef SCENE_3D_PROJECT
 
+
+// GUI parameters
+struct gui_scene
+{
+    float height = 0.6f;
+    float scaling = 3.0f;
+    int octave = 7;
+    float persistency = 0.4f;
+};
+
+struct surface
+{
+    float angle_of_view;
+    float image_aspect;
+    float z_near;
+    float z_far;
+
+    perspective_structure();
+    perspective_structure(float angle_of_view, float image_aspect, float z_near, float z_far);
+
+    mat4 matrix() const;
+    mat4 matrix_inverse() const;
+};
+
 struct scene_model : scene_base
 {
 
