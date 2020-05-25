@@ -10,7 +10,7 @@ struct gui_scene_structure
 {
     bool generate_surface = true;
     bool generate_dungeons = true;
-    bool generate_trees = false;
+    bool generate_trees = true;
     bool generate_river = false;
 
     float height = 1.0f;
@@ -26,6 +26,7 @@ struct grid
     size_t N; // Number of blocks N x N x N
     std::vector<std::vector<std::vector<int>>> blocks; // 3D array that contains the type of block in the place
     std::vector<std::vector<std::vector<bool>>> draw_blocks; // 3D array
+    std::vector<std::vector<int>> surface_z; // 3D array
 
     void create_grid(gui_scene_structure gui);
     void generate_surface(gui_scene_structure gui);
@@ -65,6 +66,8 @@ struct scene_model : scene_base
     void set_gui();
 
     grid g;
+
+    void generate_surface(gui_structure &structure);
 };
 
 #endif

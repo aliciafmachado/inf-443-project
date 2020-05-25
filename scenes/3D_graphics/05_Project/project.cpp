@@ -60,7 +60,7 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
 {
     // Drawing call: need to provide the camera information
     set_gui();
-    g.create_grid(gui_scene);
+    // g.create_grid(gui_scene);
     glEnable( GL_POLYGON_OFFSET_FILL ); // avoids z-fighting when displaying wireframe
 
     for (int k=0; k<Nz; ++k){
@@ -95,6 +95,7 @@ void grid::create_grid(gui_scene_structure gui)
     // Inialize vector with blocks type 1
     blocks = std::vector<std::vector<std::vector<int>>>(Nz, std::vector<std::vector<int>>(Ny, std::vector<int>(Nx, 0)));
     draw_blocks = std::vector<std::vector<std::vector<bool>>>(Nz, std::vector<std::vector<bool>>(Ny, std::vector<bool>(Nx, false)));
+    surface_z = std::vector<std::vector<int>>(Ny, std::vector<int>(Nx, Nz_surface));
 
     for (int k=0; k<Nz; ++k){
         for (int j=0; j<Ny; ++j){
@@ -155,6 +156,7 @@ void grid::generate_surface(gui_scene_structure gui)
             const int num_blocks = z / step;
             const int block_z = Nz_surface + num_blocks;
             blocks[block_z][kv][ku] = 1;
+            surface_z[kv][ku] = block_z;
             draw_blocks[block_z][kv][ku] = true;
 
             if (num_blocks > 0){
@@ -203,13 +205,76 @@ void grid::generate_dungeons(gui_scene_structure gui)
             }
         }
     }
-
-    std::cout << show_blocks << std::endl;
 }
 
 void grid::generate_trees(gui_scene_structure gui)
 {
-    // TODO
+    int num_trees = 5;
+
+    std::uniform_int_distribution<int> distrib_x(6, (int) Nx-7);
+    std::uniform_int_distribution<int> distrib_y(6, (int) Ny-7);
+
+    std::uniform_int_distribution<int> size(3, 5);
+    std::uniform_int_distribution<int> start_leave(3, 4);
+    std::uniform_int_distribution<int> end_leave(4, 6);
+
+    std::uniform_int_distribution<int> size_leave_edge(1, 2);
+    std::uniform_int_distribution<int> size_leave_middle(3, 4);
+
+    std::default_random_engine generator;
+    int p_x, p_y, z, s, sl, el, sle, slm;
+
+    for (int n=0; n<num_trees; ++n){
+        p_x = distrib_x(generator);
+        p_y = distrib_y(generator);
+        z = surface_z[p_y][p_x];
+
+        if (blocks[z][p_y][p_x] == 1 and blocks[z+1][p_y][p_x] == 0){
+
+            s = size(generator);
+            sl = start_leave(generator);
+            el = end_leave(generator);
+            sle = size_leave_edge(generator);
+            slm = size_leave_middle(generator);
+
+            for (int t=1; t<=s; ++t){
+                blocks[z+t][p_y][p_x] = 6;
+                draw_blocks[z+t][p_y][p_x] = true;
+            }
+
+            for (int t=sl+1; t<el; ++t){
+                for (int i=1; i<slm; ++i){
+                    if (blocks[z+t][p_y+i][p_x] == 0)
+                        blocks[z+t][p_y+i][p_x] = 5;
+                    if (blocks[z+t][p_y-i][p_x] == 0)
+                        blocks[z+t][p_y-i][p_x] = 5;
+                    if (blocks[z+t][p_y][p_x+i] == 0)
+                        blocks[z+t][p_y][p_x+i] = 5;
+                    if (blocks[z+t][p_y][p_x-i] == 0)
+                        blocks[z+t][p_y][p_x-i] = 5;
+                    if (blocks[z+t][p_y+i][p_x-i] == 0)
+                        blocks[z+t][p_y+i][p_x-i] = 5;
+                    if (blocks[z+t][p_y-i][p_x-i] == 0)
+                        blocks[z+t][p_y-i][p_x-i] = 5;
+                    if (blocks[z+t][p_y-i][p_x+i] == 0)
+                        blocks[z+t][p_y-i][p_x+i] = 5;
+                    if (blocks[z+t][p_y+i][p_x+i] == 0)
+                        blocks[z+t][p_y+i][p_x+i] = 5;
+                    draw_blocks[z+t][p_y+i][p_x] = true;
+                    draw_blocks[z+t][p_y-i][p_x] = true;
+                    draw_blocks[z+t][p_y][p_x+i]  = true;
+                    draw_blocks[z+t][p_y][p_x-i] = true;
+                    draw_blocks[z+t][p_y+i][p_x-i] = true;
+                    draw_blocks[z+t][p_y-i][p_x-i] = true;
+                    draw_blocks[z+t][p_y-i][p_x+i] = true;
+                    draw_blocks[z+t][p_y+i][p_x+i] = true;
+
+                }
+            }
+
+        }
+    }
+
 }
 
 void grid::generate_river(gui_scene_structure gui)
@@ -321,7 +386,15 @@ mesh create_block(float l)
 
 }
 
+bool prob_sigmoid(float min, float max, float v)
+{
+    std::uniform_real_distribution<float> distrib(0.0,1.0);
+    std::default_random_engine generator;
 
+    float r_x, r_y;
+    r_x = distrib(generator);
+    r_y = distrib(generator);
+}
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui)
 {
     vec2 u0[] = {{0.0f, 0.0f}, {0.5f,0.5f}, {0.2f,0.7f}, {0.8f,0.7f}};
