@@ -8,20 +8,30 @@
 // GUI parameters
 struct gui_scene_structure
 {
-    float height = 0.6f;
+    bool generate_surface = true;
+    bool generate_dungeons = true;
+    bool generate_trees = false;
+    bool generate_river = false;
+
+    float height = 1.0f;
     float scaling = 3.0f;
-    int octave = 7;
+    int octave = 5;
     float persistency = 0.4f;
     float frequency = 2.0f;
-    float min_noise = 0.7f;
+    float min_noise = 0.65f;
 };
 
 struct grid
 {
     size_t N; // Number of blocks N x N x N
     std::vector<std::vector<std::vector<int>>> blocks; // 3D array that contains the type of block in the place
+    std::vector<std::vector<std::vector<bool>>> draw_blocks; // 3D array
+
     void create_grid(gui_scene_structure gui);
-    void draw_grid(std::map<std::string,GLuint>& shaders);
+    void generate_surface(gui_scene_structure gui);
+    void generate_dungeons(gui_scene_structure gui);
+    void generate_trees(gui_scene_structure gui);
+    void generate_river(gui_scene_structure gui);
 };
 
 struct scene_model : scene_base
@@ -43,6 +53,13 @@ struct scene_model : scene_base
 
     vcl::mesh_drawable sphere;
     vcl::mesh_drawable block;
+
+    GLuint block_texture_grass;
+    GLuint block_texture_dirty;
+    GLuint block_texture_water;
+    GLuint block_texture_wood;
+    GLuint block_texture_stone;
+    GLuint block_texture_leave;
 
     gui_scene_structure gui_scene;
     void set_gui();
