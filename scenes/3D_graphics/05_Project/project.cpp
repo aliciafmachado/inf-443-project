@@ -31,11 +31,11 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
 {
     // Drawing call: need to provide the camera information
     set_gui();
-    //g.create_grid(gui_scene);
+    g.create_grid(gui_scene);
     glEnable( GL_POLYGON_OFFSET_FILL ); // avoids z-fighting when displaying wireframe
-    // skybox.frame_draw(shaders, scene, gui_scene.wireframe);
-    // g.frame_draw(shaders, scene, gui_scene.wireframe);
-    player.frame_draw(shaders, scene, gui_scene, g);
+    skybox.frame_draw(shaders, scene, gui_scene.wireframe);
+    g.frame_draw(shaders, scene, gui_scene.wireframe);
+    //player.frame_draw(shaders, scene, gui_scene, g);
 
 }
 
@@ -73,6 +73,9 @@ void scene_model::set_gui()
     float se_min = 0.1f;
     float se_max = 5.0f;
 
+    int trees_min = 0;
+    int trees_max = 100;
+
     ImGui::Spacing();
 
     ImGui::SliderFloat("Height", &gui_scene.height, height_min, height_max);
@@ -81,6 +84,7 @@ void scene_model::set_gui()
     ImGui::SliderFloat("Frequency", &gui_scene.frequency, frequency_gain_min, frequency_gain_max);
     ImGui::SliderFloat("Min noise", &gui_scene.min_noise, min_noise_min, min_noise_max);
     ImGui::SliderFloat("Se", &gui_scene.se, se_min, se_max);
+    ImGui::SliderInt("Trees", &gui_scene.trees, trees_min, trees_max);
 }
 
 #endif
