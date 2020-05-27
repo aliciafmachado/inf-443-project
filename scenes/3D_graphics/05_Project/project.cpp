@@ -14,15 +14,16 @@ mesh_drawable update_block(mesh_drawable block, float height);
 void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui)
 {
     g.setup();
-    skybox.setup();
-    player.setup(1.0f, shaders);
-
     g.create_grid(gui_scene);
+
+    skybox.setup();
+    player.setup(g.step, shaders, g);
 
     // Setup initial camera mode and position
     scene.camera.camera_type = camera_control_spherical_coordinates;
-    scene.camera.scale = 3.0f;
-    scene.camera.apply_rotation(0,0,0,1.2f);
+    scene.camera.scale = 0.2f;
+    scene.camera.translation = -player.hierarchy["body"].transform.translation;
+    scene.camera.apply_rotation(-M_PI/2.0f,0,0,1.2f);
 }
 
 /** This function is called at each frame of the animation loop.
@@ -33,15 +34,15 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
     set_gui();
     //g.create_grid(gui_scene);
     glEnable( GL_POLYGON_OFFSET_FILL ); // avoids z-fighting when displaying wireframe
-    // skybox.frame_draw(shaders, scene, gui_scene.wireframe);
-    // g.frame_draw(shaders, scene, gui_scene.wireframe);
-    player.frame_draw(shaders, scene, gui_scene, g);
+    skybox.frame_draw(shaders, scene, gui_scene.wireframe);
+    g.frame_draw(shaders, scene, gui_scene.wireframe);
+    player.frame_draw(shaders, scene, gui_scene);
 
 }
 
+
 void scene_model::set_gui()
 {
-
     ImGui::Text("Player: "); ImGui::SameLine();
     ImGui::Checkbox("Surface player", &gui_scene.surface); ImGui::SameLine();
     ImGui::Checkbox("Wireframe", &gui_scene.wireframe); ImGui::SameLine();
@@ -81,6 +82,18 @@ void scene_model::set_gui()
     ImGui::SliderFloat("Frequency", &gui_scene.frequency, frequency_gain_min, frequency_gain_max);
     ImGui::SliderFloat("Min noise", &gui_scene.min_noise, min_noise_min, min_noise_max);
     ImGui::SliderFloat("Se", &gui_scene.se, se_min, se_max);
+}
+
+void scene_model::keyboard_input(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods) {
+    player.keyboard_input(scene, window, key, scancode, action, mods);
+}
+
+void scene_model::mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods) {
+    // TODO
+}
+
+void scene_model::mouse_move(scene_structure& scene, GLFWwindow* window) {
+    // TODO
 }
 
 #endif

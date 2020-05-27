@@ -134,18 +134,21 @@ void Grid::generate_surface(gui_scene_structure gui)
                     blocks[kz + Nz_surface][kv][ku] = 2;
                     draw_blocks[kz + Nz_surface][kv][ku] = true;
                 }
+                surface_z[kv][ku] = block_z;
             }else{
                 for (int kz=0; kz > num_blocks; -- kz){
                     blocks[kz + Nz_surface][kv][ku] = 0;
                     draw_blocks[kz + Nz_surface][kv][ku] = false;
                 }
-                for (int kz=1; kz < 9; ++ kz){
+                for (int kz=1; kz < 4; ++ kz){
                     blocks[-kz + block_z][kv][ku] = 2;
                     draw_blocks[-kz + block_z][kv][ku] = true;
                 }
+                surface_z[kv][ku] = block_z;
             }
         }
     }
+
 }
 
 void Grid::generate_dungeons(gui_scene_structure gui)
@@ -256,6 +259,23 @@ void Grid::generate_trees(gui_scene_structure gui)
 void Grid::generate_river(gui_scene_structure gui)
 {
     // TODO
+}
+
+int Grid::position_to_block(vec3 p)
+{
+    int x = p[0] / step;
+    int y = p[1] / step;
+    int z = p[2] / step;
+
+    return blocks[z][y][x];
+}
+
+vec3 Grid::blocks_to_position(int x, int y, int z) {
+    float u = x * step;
+    float v = y * step;
+    float w = z * step;
+
+    return vec3{u, v, w};
 }
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui)
