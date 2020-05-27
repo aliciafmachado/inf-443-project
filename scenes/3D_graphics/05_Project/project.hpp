@@ -38,9 +38,9 @@ struct scene_model : scene_base
 
 
     // Interaction
-    //void mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods);
-    //void mouse_move(scene_structure& scene, GLFWwindow* window);
-    //void key_press(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods);
+    void mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods);
+    void mouse_move(scene_structure& scene, GLFWwindow* window);
+    void keyboard_input(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods);
 };
 
 #endif

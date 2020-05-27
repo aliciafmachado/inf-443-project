@@ -6,24 +6,61 @@
 class Player
 {
 public:
-    void setup(float scale, std::map<std::string,GLuint>& shaders);
-    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_scene_structure gui_scene, Grid g);
 
-    void key_press(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods);
+    // Character dimension
+    float size = 0.5f;
+    float head_x = 0.75f;
+    float head_y = 1.0f;
+    float head_z = 1.0f;
+    float body_y = 1.0f;
+    float body_z = 1.5f;
+    float leg_y = 0.5f;
+    float leg_z = 1.5f;
+    float arm_y = 0.5f;
+    float arm_z =  1.5f;
+    float dist_feet;
+    float dist_head;
+
+    void setup(float scale, std::map<std::string,GLuint>& shaders, Grid& g_);
+    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_scene_structure gui_scene);
+
+    void keyboard_input(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods);
     void updatePosition(scene_structure& scene);
-    void move(float dx, float dy);
-    void turn(float d_angle);
+    void move(float speed);
+    void turn(float speed);
+    void jump(float initial_speed);
+    void fall(float mass);
+
+    Grid g;
+
+    // Position in the grid
+    int x;
+    int y;
+    int z;
+    vcl::vec3 p;
 
     float angle;
     float camera_angle;
-    float x;
-    float y;
 
-    bool moving_up;
-    bool moving_down;
-    bool moving_left;
-    bool moving_right;
-    bool moving;
+    float error;
+    float scale;
+    float distance;
+
+    bool jumping;
+    bool falling;
+
+    bool moving_up = false;
+    bool moving_down = false;
+    bool moving_left = false;
+    bool moving_right = false;
+
+    bool moving_camera_up = false;
+    bool moving_camera_down = false;
+    bool moving_camera_left = false;
+    bool moving_camera_right = false;
+
+    bool moving = false;
+    vcl::vec3 v;
 
     GLuint player_texture;
 
@@ -31,5 +68,19 @@ public:
     vcl::hierarchy_mesh_drawable hierarchy;
     vcl::hierarchy_mesh_drawable_display_skeleton hierarchy_visual_debug;
 
-    void draw_player(float scale);
+    void create_player();
+
+    int block_down(vcl::vec3 p_);
+
+    int block_up(vcl::vec3 p_);
+
+    int block_down_player();
+
+    bool check_ahead();
+
+    bool check_behind();
+
+    bool check_down();
+
+    bool check_up();
 };

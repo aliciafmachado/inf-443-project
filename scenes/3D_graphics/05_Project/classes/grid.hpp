@@ -35,4 +35,7 @@ public:
 
     void setup();
     void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe);
+
+    int position_to_block(vcl::vec3 p);
+    vcl::vec3 blocks_to_position(int x, int y, int z);
 };
