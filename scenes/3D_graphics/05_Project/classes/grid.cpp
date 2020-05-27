@@ -181,74 +181,76 @@ void Grid::generate_dungeons(gui_scene_structure gui)
     }
 }
 
+// Generate trees
 void Grid::generate_trees(gui_scene_structure gui)
 {
-    int num_trees = 17;
+    int num_trees = gui.trees;
+    int type_tree = 0; // TODO
 
-    std::uniform_int_distribution<int> distrib_x(6, (int) Nx-7);
-    std::uniform_int_distribution<int> distrib_y(6, (int) Ny-7);
+    std::uniform_int_distribution<int> distrib_x(3, (int) Nx-4);
+    std::uniform_int_distribution<int> distrib_y(3, (int) Ny-4);
 
-    std::uniform_int_distribution<int> size(4, 6);
-
-    std::uniform_int_distribution<int> size_leave_edge(0, 1);
-    std::uniform_int_distribution<int> size_leave_middle(1, 2);
-
-    std::uniform_int_distribution<int> size_leave_end(0, 1);
+    // For tree:
+    std::uniform_int_distribution<int> size(3, 6);
 
     std::default_random_engine generator;
-    int p_x, p_y, z, s, sl, el, sle, slm, slend;
 
-    for (int n=0; n<num_trees; ++n){
+    // For foliage:
+    std::uniform_int_distribution<int> d_n_x(3, 4);
+    std::uniform_int_distribution<int> d_n_y(3, 4);
+    std::uniform_int_distribution<int> d_n_z(3, 4);
+    std::uniform_real_distribution<float> sc(2.0, 4.0);
+    std::uniform_real_distribution<float> pe(0.4, 0.55);
+
+    int p_x, p_y, p_z;
+    int n = 0;
+
+    while (n < num_trees) {
         p_x = distrib_x(generator);
         p_y = distrib_y(generator);
-        z = surface_z[p_y][p_x];
+        p_z = surface_z[p_y][p_x];
 
-        if (blocks[z][p_y][p_x] == 1 and blocks[z+1][p_y][p_x] == 0){
-
-            s = size(generator);
-            std::uniform_int_distribution<int> start_leave(s-2, s-1);
-            sl = start_leave(generator);
-            std::uniform_int_distribution<int> end_leave(s, s+1);
-            el = end_leave(generator);
-
-            sle = size_leave_edge(generator);
-            slm = size_leave_middle(generator);
-            slend = size_leave_end(generator);
-
-            for (int t=1; t<=s; ++t){
-                blocks[z+t][p_y][p_x] = 6;
-                draw_blocks[z+t][p_y][p_x] = true;
+        // First, we see if the condition to draw a tree is satisfied
+        if(blocks[p_z][p_y][p_x] == 1 and blocks[p_z+1][p_y][p_x] == 0) {
+            
+            int s = size(generator);
+            for (int t=1; t<=s; t++){
+                blocks[p_z+t][p_y][p_x] = 6;
+                draw_blocks[p_z+t][p_y][p_x] = true;
             }
 
-            for (int t=sl; t<=el; ++t){
-                if (t == sl || t == el){
-                    for (int i=-sle; i<=sle; ++i) {
-                        for (int j =-sle; j <= sle; ++j) {
-                            if (blocks[z + t][p_y + i][p_x + j] == 0)
-                                blocks[z + t][p_y + i][p_x + j] = 5;
-                            draw_blocks[z + t][p_y + i][p_x + j] = true;
-                        }
-                    }
-                }else {
-                    for (int i =-slm; i <= slm; ++i) {
-                        for (int j =-slm; j <= slm; ++j) {
-                            if (blocks[z + t][p_y + i][p_x + j] == 0)
-                                blocks[z + t][p_y + i][p_x + j] = 5;
-                            draw_blocks[z + t][p_y + i][p_x + j] = true;
+            float scaling = sc(generator);
+            int octave = 7;
+            float persistency = pe(generator);
+            float frequency_gain = 2.0f;
+            float min_noise = 0.65f;
+            int show_blocks = 0;
+            int n_x = d_n_x(generator);
+            int n_y = d_n_y(generator);
+            int n_z = d_n_z(generator);
+
+            int height = s + p_z - 1;
+            std::cout << height << std::endl;
+            for (int k = 1; k < n_z; k++){
+                for (int j = 0; j < n_y; j++){
+                    for (int i = 0; i < n_x; i++){
+
+                        const float u = i/(n_x-1.0f);
+                        const float v = j/(n_y-1.0f);
+                        const float w = k/(n_z-1.0f);
+                        const float p = perlin(scaling*u, scaling*v, w, octave, persistency, frequency_gain);
+
+                        if (p > min_noise && blocks[k + height][j+p_y - n_y / 2][i + p_x - n_x / 2] != 6){
+                            show_blocks += 1;
+                            draw_blocks[k + height][j + p_y - n_y / 2][i + p_x - n_x / 2] = true;
+                            blocks[k + height][j + p_y - n_y / 2][i + p_x - n_x / 2] = 5;
                         }
                     }
                 }
             }
-            if (slend == 1){
-                if (blocks[z+s+1][p_y][p_x] == 0){
-                    blocks[z+s+1][p_y][p_x] = 5;
-                    draw_blocks[z+s+1][p_y][p_x] = true;
-                }
-
-            }
+            n++;
         }
-    }
-
+    } 
 }
 
 void Grid::generate_river(gui_scene_structure gui)
