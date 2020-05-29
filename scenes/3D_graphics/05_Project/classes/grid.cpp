@@ -266,8 +266,24 @@ int Grid::position_to_block(vec3 p)
     int x = p[0] / step;
     int y = p[1] / step;
     int z = p[2] / step;
-
     return blocks[z][y][x];
+}
+
+void Grid::delete_block(vec3 p){
+    int x = p[0] / step;
+    int y = p[1] / step;
+    int z = p[2] / step;
+
+
+    blocks[z][y][x] = 0;
+
+    draw_blocks[z][y][x] = false;
+    draw_blocks[z+1][y][x] = true;
+    draw_blocks[z-1][y][x] = true;
+    draw_blocks[z][y+1][x] = true;
+    draw_blocks[z][y-1][x] = true;
+    draw_blocks[z][y][x+1] = true;
+    draw_blocks[z][y][x-1] = true;
 }
 
 vec3 Grid::blocks_to_position(int x, int y, int z) {

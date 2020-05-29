@@ -21,17 +21,18 @@ public:
     float dist_feet;
     float dist_head;
 
-    void setup(float scale, std::map<std::string,GLuint>& shaders, Grid& g_);
+    void setup(float scale, std::map<std::string,GLuint>& shaders, Grid* g_);
     void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_scene_structure gui_scene);
 
     void keyboard_input(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods);
     void updatePosition(scene_structure& scene);
+    void updateCamera(scene_structure &structure);
     void move(float speed);
     void turn(float speed);
     void jump(float initial_speed);
     void fall(float mass);
 
-    Grid g;
+    Grid* g;
 
     // Position in the grid
     int x;
@@ -70,17 +71,13 @@ public:
 
     void create_player();
 
-    int block_down(vcl::vec3 p_);
-
-    int block_up(vcl::vec3 p_);
-
-    int block_down_player();
-
     bool check_ahead();
-
     bool check_behind();
-
     bool check_down();
-
     bool check_up();
+
+    // Called every time the mouse is clicked
+    void mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods);
+    // Called every time the mouse is moved
+    void mouse_move(scene_structure& scene, GLFWwindow* window);
 };

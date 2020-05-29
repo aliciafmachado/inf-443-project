@@ -60,11 +60,11 @@ void load_shaders(std::map<std::string,GLuint>& shaders)
 
 void setup_scene(scene_structure &scene, gui_structure& gui, const std::map<std::string,GLuint>& shaders)
 {
-    scene.frame_camera = mesh_drawable(mesh_primitive_frame(0.15f, 0.05f, 0.15f, 0.3f));
-    scene.frame_camera.uniform.transform.scaling = 0.2f;
+    scene.frame_camera = mesh_drawable(mesh_primitive_frame(0.015f, 0.005f, 0.015f, 0.03f));
+    scene.frame_camera.uniform.transform.scaling = 0.02f;
     scene.frame_camera.shader = shaders.at("mesh");
 
-    scene.frame_worldspace = mesh_drawable(mesh_primitive_frame(0.05f, 0.015f, 0.05f, 0.1f));
+    scene.frame_worldspace = mesh_drawable(mesh_primitive_frame(0.005f, 0.0015f, 0.005f, 0.01f));
     scene.frame_worldspace.shader = shaders.at("mesh");
 
     int width=0, height=0;

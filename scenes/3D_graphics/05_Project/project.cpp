@@ -17,13 +17,17 @@ void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_struct
     g.create_grid(gui_scene);
 
     skybox.setup();
-    player.setup(g.step, shaders, g);
-
+    player.setup(g.step, shaders, &g);
     // Setup initial camera mode and position
     scene.camera.camera_type = camera_control_spherical_coordinates;
-    scene.camera.scale = 0.2f;
-    scene.camera.translation = -player.hierarchy["body"].transform.translation;
-    scene.camera.apply_rotation(-M_PI/2.0f,0,0,1.2f);
+    scene.camera.scale = 0.015f;
+    float dc = sqrt(player.size * player.size / 4.0f + player.body_y * player.body_y / 4.0f);
+    float teta = atan((player.size/2.0f)/(player.body_y/2.0f));
+    float d = player.distance + g.step/2.0f;
+    vec3 ahead = vec3{ d * (float) cos(player.angle), d * (float)-sin(player.angle), d};
+    vec3 center = vec3{dc * (float)sin(player.angle+teta),dc*(float)cos(player.angle+teta), 0 };
+    scene.camera.translation = -player.hierarchy["body"].transform.translation - center;
+    scene.camera.apply_rotation(-M_PI/2.0f,0,0, M_PI/2.0f);
 }
 
 /** This function is called at each frame of the animation loop.
@@ -32,11 +36,12 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
 {
     // Drawing call: need to provide the camera information
     set_gui();
-    g.create_grid(gui_scene);
+    //g.create_grid(gui_scene);
     glEnable( GL_POLYGON_OFFSET_FILL ); // avoids z-fighting when displaying wireframe
     skybox.frame_draw(shaders, scene, gui_scene.wireframe);
     g.frame_draw(shaders, scene, gui_scene.wireframe);
     player.frame_draw(shaders, scene, gui_scene);
+
 
 }
 
@@ -93,11 +98,27 @@ void scene_model::keyboard_input(scene_structure& scene, GLFWwindow* window, int
 }
 
 void scene_model::mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods) {
-    // TODO
+    player.mouse_click(scene, window, button, action, mods);
 }
 
 void scene_model::mouse_move(scene_structure& scene, GLFWwindow* window) {
-    // TODO
+    // Window size
+    int w=0;
+    int h=0;
+    glfwGetWindowSize(window, &w, &h);
+
+    // Current cursor position
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+
+    // Convert pixel coordinates to relative screen coordinates between [-1,1]
+    const float x = 2*float(xpos)/float(w)-1;
+    const float y = 1-2*float(ypos)/float(h);
+
+    // std::cout << "x = " << x << std::endl;
+    // std::cout << "y = " << y << std::endl;
+
 }
+
 
 #endif
