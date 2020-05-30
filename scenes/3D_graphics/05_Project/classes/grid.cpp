@@ -7,15 +7,19 @@ using namespace vcl;
 #define DIRTY 2
 #define STONE 3
 #define WATER 4
-#define LEAVE 5
-#define WOOD 6
+#define WOOD 5
+#define LEAVE 6
+#define WATER 7
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 mesh create_block(float l);
+mesh create_billboard_block(float l);
 
 void Grid::setup()
 {
     block = create_block(step / 2);
+    block_billboard = create_billboard_block(step / 2);
+    block_billboard.uniform.shading = {1,0,0};
     block_texture_grass = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/grass.png"),
                                              GL_REPEAT, GL_REPEAT );
     block_texture_dirty = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/dirty.png"),
@@ -24,11 +28,11 @@ void Grid::setup()
                                              GL_REPEAT, GL_REPEAT );
     block_texture_water = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/water.png"),
                                              GL_REPEAT, GL_REPEAT );
-    block_texture_leave = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/leave.png"),
+    block_texture_leave = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/leaves_oak.png"),
                                              GL_REPEAT, GL_REPEAT );
     block_texture_wood =  create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/wood.png"),
                                              GL_REPEAT, GL_REPEAT );
-    // TODO : Merge setup and create_grid
+    block_billboard.uniform.shading = {1,0,0};
 }
 
 void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe)
@@ -37,30 +41,49 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
         for (int j=0; j<Ny; ++j){
             for (int i=0; i<Nx; ++i){
                 if (blocks[k][j][i] != 0 and draw_blocks[k][j][i]) {
-                    block.uniform.transform.translation   = {i * step, j * step, k * step};
-                    if (blocks[k][j][i] == 1)
+                    if(blocks[k][j][i] < 6) {
+                        block.uniform.transform.translation   = {i * step, j * step, k * step};
+                        if (blocks[k][j][i] == 1)
                         glBindTexture(GL_TEXTURE_2D, block_texture_grass);
-                    if (blocks[k][j][i] == 2)
-                        glBindTexture(GL_TEXTURE_2D, block_texture_dirty);
-                    if (blocks[k][j][i] == 3)
-                        glBindTexture(GL_TEXTURE_2D, block_texture_stone);
-                    if (blocks[k][j][i] == 4)
-                        glBindTexture(GL_TEXTURE_2D, block_texture_water);
-                    if (blocks[k][j][i] == 5)
-                        glBindTexture(GL_TEXTURE_2D, block_texture_leave);
-                    if (blocks[k][j][i] == 6)
-                        glBindTexture(GL_TEXTURE_2D, block_texture_wood);
-                    draw(block, scene.camera, shaders["mesh"]);
-                    if (wireframe)
-                        draw(block, scene.camera, shaders["wireframe"]);
+                        if (blocks[k][j][i] == 2)
+                            glBindTexture(GL_TEXTURE_2D, block_texture_dirty);
+                        if (blocks[k][j][i] == 3)
+                            glBindTexture(GL_TEXTURE_2D, block_texture_stone);
+                        if (blocks[k][j][i] == 4)
+                            glBindTexture(GL_TEXTURE_2D, block_texture_water);
+                        if (blocks[k][j][i] == 5)
+                            glBindTexture(GL_TEXTURE_2D, block_texture_wood);
+                        draw(block, scene.camera, shaders["mesh"]);
+                        if (wireframe)
+                            draw(block, scene.camera, shaders["wireframe"]);
+                    }
+                    else {
+                        glEnable(GL_BLEND);
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        //glDepthMask(false);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // avoids sampling artifacts
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // avoids sampling artifacts
+                        block_billboard.uniform.transform.translation = {i * step, j * step, k * step};
+                        if (blocks[k][j][i] == 6) {
+                            glBindTexture(GL_TEXTURE_2D, block_texture_leave);
+                            block_billboard.uniform.color = {0.1,0.9,0.1};
+                        }
+                        draw(block_billboard, scene.camera, shaders["mesh"]);
+                        if (wireframe)
+                            draw(block_billboard, scene.camera, shaders["wireframe"]);
+                        //glDepthMask(true);
+                        glDisable(GL_BLEND);                    
+                    }
                     glBindTexture(GL_TEXTURE_2D, scene.texture_white);
                 }
             }
         }
     }
 }
-void Grid::create_grid(gui_scene_structure gui)
+void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
 {
+    gen = g;
+
     // Inialize vector with blocks type 1
     blocks = std::vector<std::vector<std::vector<int>>>(Nz, std::vector<std::vector<int>>(Ny, std::vector<int>(Nx, 0)));
     draw_blocks = std::vector<std::vector<std::vector<bool>>>(Nz, std::vector<std::vector<bool>>(Ny, std::vector<bool>(Nx, false)));
@@ -196,8 +219,6 @@ void Grid::generate_trees(gui_scene_structure gui)
     // For tree:
     std::uniform_int_distribution<int> size(3, 6);
 
-    std::default_random_engine generator;
-
     // For foliage:
     std::uniform_int_distribution<int> d_n_x(3, 4);
     std::uniform_int_distribution<int> d_n_y(3, 4);
@@ -209,28 +230,28 @@ void Grid::generate_trees(gui_scene_structure gui)
     int n = 0;
 
     while (n < num_trees) {
-        p_x = distrib_x(generator);
-        p_y = distrib_y(generator);
+        p_x = distrib_x(gen);
+        p_y = distrib_y(gen);
         p_z = surface_z[p_y][p_x];
 
         // First, we see if the condition to draw a tree is satisfied
         if(blocks[p_z][p_y][p_x] == 1 and blocks[p_z+1][p_y][p_x] == 0) {
             
-            int s = size(generator);
+            int s = size(gen);
             for (int t=1; t<=s; t++){
-                blocks[p_z+t][p_y][p_x] = 6;
+                blocks[p_z+t][p_y][p_x] = 5;
                 draw_blocks[p_z+t][p_y][p_x] = true;
             }
 
-            float scaling = sc(generator);
+            float scaling = sc(gen);
             int octave = 7;
-            float persistency = pe(generator);
+            float persistency = pe(gen);
             float frequency_gain = 2.0f;
             float min_noise = 0.65f;
             int show_blocks = 0;
-            int n_x = d_n_x(generator);
-            int n_y = d_n_y(generator);
-            int n_z = d_n_z(generator);
+            int n_x = d_n_x(gen);
+            int n_y = d_n_y(gen);
+            int n_z = d_n_z(gen);
 
             int height = s + p_z - 1;
             std::cout << height << std::endl;
@@ -246,7 +267,7 @@ void Grid::generate_trees(gui_scene_structure gui)
                         if (p > min_noise && blocks[k + height][j+p_y - n_y / 2][i + p_x - n_x / 2] != 6){
                             show_blocks += 1;
                             draw_blocks[k + height][j + p_y - n_y / 2][i + p_x - n_x / 2] = true;
-                            blocks[k + height][j + p_y - n_y / 2][i + p_x - n_x / 2] = 5;
+                            blocks[k + height][j + p_y - n_y / 2][i + p_x - n_x / 2] = 6;
                         }
                     }
                 }
@@ -341,4 +362,43 @@ mesh create_block(float l)
 
     return block;
 
+}
+
+mesh create_billboard_block(float l) {
+    mesh block;
+
+    const vec3 p000 = {-l,-l,-l};
+    const vec3 p001 = {-l,-l, l};
+    const vec3 p010 = {-l, l,-l};
+    const vec3 p011 = {-l, l, l};
+    const vec3 p100 = { l,-l,-l};
+    const vec3 p101 = { l,-l, l};
+    const vec3 p110 = { l, l,-l};
+    const vec3 p111 = { l, l, l};
+
+    block.position = {
+            p111, p011, p001, p101,
+            p101, p001, p000, p100,
+            p011, p001, p000, p010,
+            p111, p110, p101, p100,
+            p110, p010, p000, p100,
+            p111, p011, p010, p110
+    };
+
+    block.connectivity = {
+            {0,1,2}, {0,2,3}, {4,5,6}, {4,6,7},
+            {8,11,10}, {8,10,9}, {17,16,19}, {17,19,18},
+            {23,22,21}, {23,21,20}, {13,12,14}, {13,14,15}
+    };
+
+    block.texture_uv = {
+            {0,1}, {1,1}, {1,0}, {0,0},
+            {0,1}, {1,1}, {1,0}, {0,0},
+            {0,1}, {1,1}, {1,0}, {0,0},
+            {0,1}, {1,1}, {1,0}, {0,0},
+            {0,1}, {1,1}, {1,0}, {0,0},
+            {0,1}, {1,1}, {1,0}, {0,0},
+    };
+
+    return block;
 }
