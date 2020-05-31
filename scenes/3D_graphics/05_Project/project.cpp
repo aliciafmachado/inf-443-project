@@ -1,6 +1,8 @@
 #include "project.hpp"
 
 #ifdef SCENE_3D_PROJECT
+#define KEY 1
+std::default_random_engine gen(KEY);
 
 
 // Add vcl namespace within the current one - Allows to use function from vcl library without explicitely preceeding their name with vcl::
@@ -14,7 +16,7 @@ mesh_drawable update_block(mesh_drawable block, float height);
 void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui)
 {
     g.setup();
-    g.create_grid(gui_scene);
+    g.create_grid(gui_scene, gen);
 
     skybox.setup();
     player.setup(g.step, shaders, g);
@@ -32,7 +34,7 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
 {
     // Drawing call: need to provide the camera information
     set_gui();
-    g.create_grid(gui_scene);
+    //g.create_grid(gui_scene, gen);
     glEnable( GL_POLYGON_OFFSET_FILL ); // avoids z-fighting when displaying wireframe
     skybox.frame_draw(shaders, scene, gui_scene.wireframe);
     g.frame_draw(shaders, scene, gui_scene.wireframe);

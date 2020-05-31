@@ -123,6 +123,46 @@ void draw(const mesh_drawable_gpu_data& gpu_data )
     glBindVertexArray(0);
 }
 
+void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 translations[]) {
+    // Doesn't draw if the structure hasn't been initialized
+    if(gpu_data.number_triangles==0 && gpu_data.vao==0)
+        return ;
+
+    if(gpu_data.number_triangles==0) {
+        std::cout<<"Warning, try to draw data with 0 triangles"<<std::endl;
+        return ;
+    }
+    assert(glIsVertexArray(gpu_data.vao));
+    assert(glIsBuffer(gpu_data.vbo_index));
+
+    int length = (sizeof(translations)/sizeof(*translations));
+
+    // store instance data in an array buffer
+    unsigned int instanceVBO;
+    glGenBuffers(1, &instanceVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO); // change 100 for quantity of chunk
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vcl::vec3) * length, &translations[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    // set up vertex data (and buffer(s)) and configure vertex attributes
+    // ------------------------------------------------------------------
+    glBindVertexArray(gpu_data.vao); opengl_debug();
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gpu_data.vbo_index); opengl_debug();
+    // glBindBuffer(GL_ARRAY_BUFFER, gpu_data.vbo_index);
+
+    // also set instance data
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glVertexAttribDivisor(4, 1); // tell OpenGL this is an instanced vertex attribute.
+
+
+    // draw 100 instanced quads
+    glBindVertexArray(gpu_data.vao);
+    glDrawElementsInstanced(GL_TRIANGLES, GLsizei(gpu_data.number_triangles*3), GL_UNSIGNED_INT, nullptr, length);
+    //glDrawArraysInstanced(GL_TRIANGLES, 0, GLsizei(gpu_data.number_triangles*3), length);
+
+    }
 
 
 }

@@ -60,6 +60,7 @@ int main()
     glfwSetWindowSizeCallback(gui.window, window_size_callback);
 
     load_shaders(shaders);
+    
     setup_scene(scene, gui, shaders);
 
     opengl_debug();

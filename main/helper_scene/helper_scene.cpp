@@ -48,6 +48,7 @@ void load_shaders(std::map<std::string,GLuint>& shaders)
     std::cout<<"*** Setup Shader ***"<<std::endl;
 
     shaders["mesh"] = create_shader_program("scenes/shared_assets/shaders/mesh/shader.vert.glsl","scenes/shared_assets/shaders/mesh/shader.frag.glsl");
+    shaders["mesh_array"] = create_shader_program("scenes/shared_assets/shaders/mesh_array/shader.vert.glsl","scenes/shared_assets/shaders/mesh_array/shader.frag.glsl");
     shaders["mesh_bf"] = create_shader_program("scenes/shared_assets/shaders/mesh_back_illumination/mesh.vert.glsl","scenes/shared_assets/shaders/mesh_back_illumination/mesh.frag.glsl");
     shaders["wireframe"] = create_shader_program("scenes/shared_assets/shaders/wireframe/shader.vert.glsl","scenes/shared_assets/shaders/wireframe/shader.geom.glsl","scenes/shared_assets/shaders/wireframe/shader.frag.glsl");
     shaders["wireframe_quads"] = create_shader_program("scenes/shared_assets/shaders/wireframe_quads/shader.vert.glsl","scenes/shared_assets/shaders/wireframe_quads/shader.geom.glsl","scenes/shared_assets/shaders/wireframe_quads/shader.frag.glsl");

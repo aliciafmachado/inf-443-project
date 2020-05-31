@@ -16,6 +16,7 @@ public:
     size_t Nz_dungeon = 30; // Number of blocks in z
     int Nz_surface = 32; // Number of blocks in z
     float step = 1 / (float) Nx; // Minimum step (Divide by the biggest N)
+    int N_blocks = 0;
 
     size_t N; // Number of blocks N x N x N
     std::vector<std::vector<std::vector<int>>> blocks; // 3D array that contains the type of block in the place

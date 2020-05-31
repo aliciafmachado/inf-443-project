@@ -47,5 +47,6 @@ public:
 void draw(const mesh_drawable& drawable, const camera_scene& camera);
 void draw(const mesh_drawable& drawable, const camera_scene& camera, GLuint shader);
 void draw(const mesh_drawable& drawable, const camera_scene& camera, GLuint shader, GLuint texture_id);
+void draw_instanced(const mesh_drawable& drawable, const camera_scene& camera, GLuint shader, GLuint texture_id, vec3 translations[]); 
 
 }
