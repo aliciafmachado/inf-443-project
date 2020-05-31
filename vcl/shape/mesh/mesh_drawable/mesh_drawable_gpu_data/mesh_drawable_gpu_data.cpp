@@ -123,7 +123,7 @@ void draw(const mesh_drawable_gpu_data& gpu_data )
     glBindVertexArray(0);
 }
 
-void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 translations[]) {
+void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 translations[], int len) {
     // Doesn't draw if the structure hasn't been initialized
     if(gpu_data.number_triangles==0 && gpu_data.vao==0)
         return ;
@@ -134,15 +134,14 @@ void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 translations[])
     }
     assert(glIsVertexArray(gpu_data.vao));
     assert(glIsBuffer(gpu_data.vbo_index));
-
-    int length = (sizeof(translations)/sizeof(*translations));
+    std::cout << len << std::endl;
 
     // store instance data in an array buffer
     unsigned int instanceVBO;
     glGenBuffers(1, &instanceVBO);
     glBindBuffer(GL_ARRAY_BUFFER, instanceVBO); // change 100 for quantity of chunk
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vcl::vec3) * length, &translations[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vcl::vec3) * len, &translations[0], GL_STATIC_DRAW);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -159,8 +158,8 @@ void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 translations[])
 
     // draw 100 instanced quads
     glBindVertexArray(gpu_data.vao);
-    glDrawElementsInstanced(GL_TRIANGLES, GLsizei(gpu_data.number_triangles*3), GL_UNSIGNED_INT, nullptr, length);
-    //glDrawArraysInstanced(GL_TRIANGLES, 0, GLsizei(gpu_data.number_triangles*3), length);
+    glDrawElementsInstanced(GL_TRIANGLES, GLsizei(gpu_data.number_triangles*3), GL_UNSIGNED_INT, nullptr, len);
+    //glDrawArraysInstanced(GL_TRIANGLES, 0, GLsizei(gpu_data.number_triangles*3), len);
 
     }
 

@@ -88,7 +88,7 @@ void draw(const mesh_drawable& drawable, const camera_scene& camera, GLuint shad
 
 }
 
-void draw_instanced(const mesh_drawable& drawable, const camera_scene& camera, GLuint shader, GLuint texture_id, vcl::vec3 translations[]) {
+void draw_instanced(const mesh_drawable& drawable, const camera_scene& camera, GLuint shader, GLuint texture_id, vcl::vec3 translations[], int len) {
     // If shader is, skip display
     if(shader==0)
         return ;
@@ -128,7 +128,7 @@ void draw_instanced(const mesh_drawable& drawable, const camera_scene& camera, G
     uniform(shader, "specular", drawable.uniform.shading.specular);    opengl_debug();
     uniform(shader, "specular_exponent", drawable.uniform.shading.specular_exponent); opengl_debug();
     std::cout << "mesh dr entering" <<std::endl;
-    vcl::draw_instanced(drawable.data, translations); opengl_debug();
+    vcl::draw_instanced(drawable.data, translations, len); opengl_debug();
     std::cout << "mesh dr coming out" <<std::endl;
 }
 

@@ -39,5 +39,5 @@ struct mesh_drawable_gpu_data {
 /** Call raw OpenGL draw */
 void draw(const mesh_drawable_gpu_data& gpu_data);
 // Added function to draw with instantiation
-void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 tranaslations[]);
+void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 translations[], int len);
 }

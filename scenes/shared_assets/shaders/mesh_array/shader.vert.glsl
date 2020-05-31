@@ -48,5 +48,5 @@ void main()
 
     fragment.position = position_transformed;
     gl_Position = perspective * view * position_transformed;
-    gl_Position = gl_Position + vec4(aOffset, 0.0);
+    gl_Position = gl_Position + perspective * view * vec4(aOffset, 0.0);
 }
