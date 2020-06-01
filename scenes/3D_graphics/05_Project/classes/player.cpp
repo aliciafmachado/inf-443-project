@@ -2,8 +2,9 @@
 
 using namespace vcl;
 
-void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid& g_) {
+void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g_) {
 
+    g =  g_;
     // Scaling
     scale = scale_;
 
@@ -17,19 +18,21 @@ void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid& g_
     leg_z *= scale;
     arm_y *= scale;
     arm_z *=  scale;
-    dist_feet = leg_z + g.step / 2.0f;
+
+    dist_feet = leg_z + g->step / 2.0f;
+
     dist_head = body_z + head_z;
 
     bool find_start_place = false;
 
-    g = g_;
+
 
     distance = 1.2f * scale;
     error = leg_z / 10.0f;
     v = {0, 0, 0};
 
-    std::uniform_int_distribution<int> start_x(0, g.Nx);
-    std::uniform_int_distribution<int> start_y(0, g.Ny);
+    std::uniform_int_distribution<int> start_x(0, g->Nx);
+    std::uniform_int_distribution<int> start_y(0, g->Ny);
     std::default_random_engine generator;
     generator.seed(5);
     create_player();
@@ -39,13 +42,13 @@ void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid& g_
 
     while (!find_start_place){
 
-        z = g.surface_z[y][x];
-        if (g.blocks[z+1][y][x] == 0 && g.blocks[z+2][y][x] == 0 && g.blocks[z+3][y][x] == 0 && g.blocks[z+4][y][x] == 0)
+        z = g->surface_z[y][x];
+        if (g->blocks[z+1][y][x] == 0 && g->blocks[z+2][y][x] == 0 && g->blocks[z+3][y][x] == 0 && g->blocks[z+4][y][x] == 0)
             find_start_place = true;
         else
             z += 1;
     }
-    p = g.blocks_to_position(x, y, z) + vec3{0, 0, dist_feet};
+    p = g->blocks_to_position(x, y, z) + vec3{0, 0, dist_feet};
 
     angle = 0;
     camera_angle = 0;
@@ -63,8 +66,7 @@ void Player::frame_draw(std::map<std::string, GLuint> &shaders, scene_structure 
 
     timer.update();
     updatePosition(scene);
-
-    scene.camera.translation = -hierarchy["body"].transform.translation;
+    updateCamera(scene);
 
     // The default display
     if(gui_scene.surface) {
@@ -102,10 +104,8 @@ void Player::updatePosition(scene_structure &scene) {
     moving = moving_up || moving_down || jumping || falling;
     bool turning = moving_left || moving_right;
 
-    float speed = g.step / 2;
-    float speed_turn = M_PI / 10;
-    float speed_turn_camera = M_PI / 10;
-
+    float speed = g->step / 2;
+    float speed_turn = M_PI / 16;
     if (moving || turning) {
 
         mat3 const Symmetry = {-1, 0, 0, 0, 1, 0, 0, 0, 1};
@@ -144,35 +144,13 @@ void Player::updatePosition(scene_structure &scene) {
         hierarchy["mov_arm_right"].transform.rotation = R_arm;
         hierarchy["mov_arm_left"].transform.rotation = R_arm;
 
-        z =  (int) ((p.z-leg_z +g.step/2.0f - error) / g.step);
-        p.z = (float) z*g.step + leg_z + g.step/2.0f;
-
-        hierarchy["body"].transform.translation = p;
         v = vec3{0, 0,0};
     }
 
-    if (moving_left) {
-        camera_angle += speed_turn_camera;
-        scene.camera.apply_rotation(speed_turn_camera, 0, 0, 0);
-    } else if (moving_right) {
-        camera_angle -= speed_turn_camera;
-        scene.camera.apply_rotation(-speed_turn_camera, 0, 0, 0);
-    }
+    z =  (int) ((p.z-leg_z +g->step/2.0f - error) / g->step);
+    p.z = (float) z*g->step + leg_z + g->step/2.0f;
 
-    if (moving_camera_up) {
-        scene.camera.apply_rotation(0, 0.01f, 0, 0);
-    } else if (moving_camera_down) {
-        scene.camera.apply_rotation(0, -0.01f, 0, 0);
-    }
-
-    if (moving_camera_right) {
-        camera_angle -= 0.05f;
-        scene.camera.apply_rotation(0.05f, 0, 0, 0);
-    } else if (moving_camera_left) {
-        camera_angle += 0.05f;
-        scene.camera.apply_rotation(-0.05f, 0, 0, 0);
-    }
-
+    hierarchy["body"].transform.translation = p;
 }
 
 void Player::jump(float initial_speed)
@@ -186,7 +164,7 @@ void Player::jump(float initial_speed)
 
 void Player::fall(float m)
 {
-    v = v - vec3{0, 0, g.step/4.0f};
+    v = v - vec3{0, 0, g->step/4.0f};
 }
 
 
@@ -230,8 +208,8 @@ void Player::move(float speed)
 
     p = p + v;
     if (down){
-        z =  (int) ((p.z-leg_z +g.step/2.0f - error) / g.step);
-        p.z = (float) z*g.step + leg_z + g.step/2.0f;
+        z =  (int) ((p.z-leg_z +g->step/2.0f - error) / g->step);
+        p.z = (float) z*g->step + leg_z + g->step/2.0f;
     }
 
     hierarchy["body"].transform.translation = p;
@@ -331,26 +309,6 @@ void Player::create_player()
     hierarchy.add(arm, "arm_left", "mov_arm_left", {-size/2.0f, -arm_y/2.0f, -arm_z});
 }
 
-int Player::block_down_player()
-{
-    return g.blocks[z][y][x];
-}
-
-int Player::block_down(vec3 p)
-{
-
-    vec3 p2 = p + vec3{0, 0, 0};
-    return g.position_to_block(p2);
-}
-
-int Player::block_up(vec3 p)
-{
-    float d = sqrt (size * size /4.0f + body_y * body_y/4.0f);
-    vec3 p2 = p + vec3{d*(float) cos(angle),d*(float)-sin(angle), dist_feet};
-
-    return g.position_to_block(p2);
-}
-
 bool Player::check_ahead()
 {
     //std::cout << "ahead debug" << std::endl;
@@ -360,7 +318,7 @@ bool Player::check_ahead()
     float teta = atan((size/2.0f)/(body_y/2.0f));
     //std::cout << "teta + angle = " << teta  + angle << std::endl;
     vec3 center = p + vec3{d * (float)sin(angle+teta),d*(float)cos(angle+teta), 0 };
-    vec3 p1 = center + vec3{0, 0, -leg_z +g.step/2.0f + error};
+    vec3 p1 = center + vec3{0, 0, -leg_z +g->step/2.0f + error};
     vec3 p2 = center + vec3{0, 0, 0};
     vec3 p3 = center + vec3{0, 0, dist_head - error};
     //std::cout << "p = " << p << std::endl;
@@ -373,7 +331,7 @@ bool Player::check_ahead()
     vec3 ahead = vec3{ distance * (float) cos(angle), distance * (float)-sin(angle), 0};
     //std::cout << "leg_z = " << leg_z << std::endl;
     //std::cout << g.position_to_block(p1 + ahead) << std::endl;
-    bool l = g.position_to_block(p1 + ahead) != 0 || g.position_to_block(p2 + ahead) != 0 || g.position_to_block(p3 + ahead) != 0;
+    bool l = g->position_to_block(p1 + ahead) != 0 || g->position_to_block(p2 + ahead) != 0 || g->position_to_block(p3 + ahead) != 0;
     return l;
 }
 
@@ -381,12 +339,12 @@ bool Player::check_behind()
 {
     float d = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
     float teta = atan((size/2.0f)/(body_y/2.0f));
-    vec3 center = p + vec3{d * (float)cos(M_PI/2.0f-angle-teta),d*(float)-sin(M_PI/2.0f - angle-teta), 0 };
-    vec3 p1 = center + vec3{0, 0, -leg_z +g.step/2.0f + error};
+    vec3 center = p + vec3{d * (float)sin(angle+teta),d*(float)cos(angle+teta), 0 };
+    vec3 p1 = center + vec3{0, 0, -leg_z +g->step/2.0f + error};
     vec3 p2 = center + vec3{0, 0, 0};
     vec3 p3 = center + vec3{0, 0, dist_head - error};
     vec3 behind = vec3{ distance * (float)-cos(angle), distance * (float)sin(angle), 0};
-    bool l = g.position_to_block(p1 + behind) != 0 || g.position_to_block(p2 + behind) != 0 || g.position_to_block(p3 + behind) != 0;
+    bool l = g->position_to_block(p1 + behind) != 0 || g->position_to_block(p2 + behind) != 0 || g->position_to_block(p3 + behind) != 0;
     return l;
 }
 
@@ -395,8 +353,8 @@ bool Player::check_down()
     //std::cout << "down debug" << std::endl;
     float d = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
     float teta = atan((size/2.0f)/(body_y/2.0f));
-    vec3 center = p + vec3{d * (float)cos(M_PI/2.0f-angle-teta),d*(float)-sin(M_PI/2.0f - angle-teta), 0 };
-    vec3 p1 = center + vec3{0, 0, -leg_z +g.step/2.0f - error};
+    vec3 center = p + vec3{d * (float)sin(angle+teta),d*(float)cos(angle+teta), 0 };
+    vec3 p1 = center + vec3{0, 0, -leg_z +g->step/2.0f - error};
     //std::cout << "p = " << p << std::endl;
     //std::cout << "center = " << center << std::endl;
     //std::cout << "p1 = " <<  p1 << std::endl;
@@ -406,7 +364,7 @@ bool Player::check_down()
     //std::cout << "z standing = " << (p1[2] / g.step) << std::endl;
     //std::cout << "leg_z = " << leg_z << std::endl;
     //std::cout << g.position_to_block(p1) << std::endl;
-    bool l = g.position_to_block(p1) != 0;
+    bool l = g->position_to_block(p1) != 0;
     return l;
 }
 
@@ -414,9 +372,87 @@ bool Player::check_up()
 {
     float d = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
     float teta = atan((size/2.0f)/(body_y/2.0f));
-    vec3 center = p + vec3{d * (float)cos(M_PI/2.0f-angle-teta),d*(float)-sin(M_PI/2.0f - angle-teta), 0 };
+    vec3 center = p + vec3{d * (float)sin(angle+teta),d*(float)cos(angle+teta), 0 };
     vec3 p1 = center + vec3{0, 0, dist_head + error};
-    bool l = g.position_to_block(p1) != 0;
+    bool l = g->position_to_block(p1) != 0;
     return l;
 }
 
+void Player::updateCamera(scene_structure &scene) {
+
+    float speed_turn_camera = M_PI / 16;
+
+    if (moving_left) {
+        camera_angle += speed_turn_camera;
+        scene.camera.apply_rotation(speed_turn_camera, 0, 0, 0);
+    } else if (moving_right) {
+        camera_angle -= speed_turn_camera;
+        scene.camera.apply_rotation(-speed_turn_camera, 0, 0, 0);
+    }
+
+    if (moving_camera_up) {
+        scene.camera.apply_rotation(0, 0.01f, 0, 0);
+    } else if (moving_camera_down) {
+        scene.camera.apply_rotation(0, -0.01f, 0, 0);
+    }
+
+    if (moving_camera_right) {
+        camera_angle -= 0.05f;
+        scene.camera.apply_rotation(0.05f, 0, 0, 0);
+    } else if (moving_camera_left) {
+        camera_angle += 0.05f;
+        scene.camera.apply_rotation(-0.05f, 0, 0, 0);
+    }
+
+    float dc = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
+    float teta = atan((size/2.0f)/(body_y/2.0f));
+    float d = distance + g->step/2.0f;
+    vec3 ahead = vec3{ d * (float) cos(angle), d * (float)-sin(angle), d};
+    vec3 center = vec3{dc * (float)sin(angle+teta),dc*(float)cos(angle+teta), 0 };
+    scene.camera.translation = - p - center- ahead;
+
+    if (-scene.camera.orientation[0] >= 0 and -scene.camera.orientation[2] >= 0){
+        angle = asin(scene.camera.orientation[5]);
+    }else if(-scene.camera.orientation[0] >= 0 and -scene.camera.orientation[2] <= 0){
+        angle = M_PI + asin(scene.camera.orientation[0]);
+    }else if(-scene.camera.orientation[0] <= 0 and -scene.camera.orientation[2] <= 0){
+        angle = -acos(-scene.camera.orientation[2]);
+    }else{
+        angle = asin(scene.camera.orientation[5]);
+    }
+    hierarchy["body"].transform.rotation = rotation_from_axis_angle_mat3({0,0,-1}, angle);
+}
+
+void Player::mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods) {
+    // Mouse click is used to select a position of the control polygon
+    // ******************************************************************** //
+
+    // Cursor coordinates
+    const vec2 cursor = glfw_cursor_coordinates_window(window);
+    bool mouse_click_right = (glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_RIGHT)==GLFW_PRESS);
+
+    if (mouse_click_right){
+        // Create the 3D ray passing by the selected point on the screen
+        const ray r = picking_ray(scene.camera, cursor);
+        float d = g->step;
+        bool box = false;
+
+        const vec3 b = r.p + r.u * d;
+
+
+        while (d < 6 * g->step && !box){
+            const vec3 b = r.p + r.u * d;
+            // std::cout << g.position_to_block(b) << std::endl;
+            if (g->position_to_block(b) != 0 ){
+                box = true;
+                g->delete_block(b);
+            }
+            d += g->step;
+        }
+    }
+
+    // Check if this ray intersects a position (represented by a sphere)
+    // Loop over all positions and get the intersected position (the closest one in case of multiple intersection)
+    // const float distance = norm(info.intersection-r.p); // get the closest intersection
+
+}

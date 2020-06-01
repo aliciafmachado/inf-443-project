@@ -47,4 +47,6 @@ public:
 
     int position_to_block(vcl::vec3 p);
     vcl::vec3 blocks_to_position(int x, int y, int z);
+
+    void delete_block(vcl::vec3 p);
 };
