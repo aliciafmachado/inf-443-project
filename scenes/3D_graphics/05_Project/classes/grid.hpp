@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <vector>
 #include "main/scene_base/base.hpp"
 #include "gui_scene_structure.hpp"
 
@@ -16,12 +16,12 @@ public:
     size_t Nz_dungeon = 30; // Number of blocks in z
     int Nz_surface = 32; // Number of blocks in z
     float step = 1 / (float) Nx; // Minimum step (Divide by the biggest N)
-    int N_blocks = 0;
 
     size_t N; // Number of blocks N x N x N
     std::vector<std::vector<std::vector<int>>> blocks; // 3D array that contains the type of block in the place
     std::vector<std::vector<std::vector<bool>>> draw_blocks; // 3D array
     std::vector<std::vector<int>> surface_z; // 3D array
+    //std::map<int,std::vector<vcl::vec3>> translations;
 
     // chunks -> here for futher optimisation
     // std::vector<std::map<vcl::vec3, std::vector<int>>> chunks;
@@ -38,12 +38,7 @@ public:
     vcl::mesh_drawable block;
     vcl::mesh_drawable block_billboard;
 
-    GLuint block_texture_grass;
-    GLuint block_texture_dirty;
-    GLuint block_texture_water;
-    GLuint block_texture_wood;
-    GLuint block_texture_stone;
-    GLuint block_texture_leave;
+    GLuint* block_textures;
 
     void setup();
     void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe);

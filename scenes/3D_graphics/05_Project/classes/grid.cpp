@@ -2,6 +2,7 @@
 
 using namespace vcl;
 
+#define BLOCK_TYPES 6
 #define NONE 0
 #define GRASS 1
 #define DIRTY 2
@@ -9,7 +10,6 @@ using namespace vcl;
 #define WATER 4
 #define WOOD 5
 #define LEAVE 6
-#define WATER 7
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 mesh create_block(float l);
@@ -20,49 +20,39 @@ void Grid::setup()
     block = create_block(step / 2);
     block_billboard = create_billboard_block(step / 2);
     block_billboard.uniform.shading = {1,0,0};
-    block_texture_grass = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/grass.png"),
+
+    block_textures = new GLuint[BLOCK_TYPES];
+    block_textures[0] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/grass.png"),
                                              GL_REPEAT, GL_REPEAT );
-    block_texture_dirty = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/dirty.png"),
+    block_textures[1] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/dirty.png"),
                                              GL_REPEAT, GL_REPEAT );
-    block_texture_stone = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/rock.png"),
+    block_textures[2] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/rock.png"),
                                              GL_REPEAT, GL_REPEAT );
-    block_texture_water = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/water.png"),
+    block_textures[3] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/water.png"),
                                              GL_REPEAT, GL_REPEAT );
-    block_texture_leave = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/leaves_oak.png"),
+    block_textures[4] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/wood.png"),
                                              GL_REPEAT, GL_REPEAT );
-    block_texture_wood =  create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/wood.png"),
+    block_textures[5] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/leave.png"),
                                              GL_REPEAT, GL_REPEAT );
-    block_billboard.uniform.shading = {1,0,0};
 }
 
-void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe)
-{
+void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe) {
 
     // create vector of translations
-    vec3* translations = new vec3[N_blocks];
-    int counter = 0;
-    std::cout << N_blocks << std::endl;
-    draw(block, scene.camera, shaders["mesh"], block_texture_grass);
+    std::map<int,std::vector<vec3>> translations;
+    for(int i = 1; i <= BLOCK_TYPES; i++) {
+        translations[i] = {};
+    }
+    int count = 0;
 
     for (int k=0; k<Nz; ++k){
         for (int j=0; j<Ny; ++j){
             for (int i=0; i<Nx; ++i){
-                if (blocks[k][j][i] != 0 and draw_blocks[k][j][i]) {
-                    if(blocks[k][j][i] < 6 && counter < N_blocks) {
+                if (blocks[k][j][i] != 0 && draw_blocks[k][j][i]) {
+                    if(blocks[k][j][i] != 0 ) {
                         //block.uniform.transform.translation   = {i * step, j * step, k * step};
-                        translations[counter++] = {i * step, j * step, k * step};
-                        /*if (blocks[k][j][i] == 1)
-                            draw(block, scene.camera, shaders["mesh"], block_texture_grass);
-                        if (blocks[k][j][i] == 2)
-                            draw(block, scene.camera, shaders["mesh"], block_texture_dirty);
-                        if (blocks[k][j][i] == 3)
-                            draw(block, scene.camera, shaders["mesh"], block_texture_stone);
-                        if (blocks[k][j][i] == 4)
-                            draw(block, scene.camera, shaders["mesh"], block_texture_water);
-                        if (blocks[k][j][i] == 5)
-                        draw(block, scene.camera, shaders["mesh"], block_texture_wood);
-                        if (wireframe)
-                            draw(block, scene.camera, shaders["wireframe"]);*/
+                        translations[blocks[k][j][i]].push_back({i * step, j * step, k * step});
+                        count++; // TODO readd billboards
                     }
                     /*else {
                         glEnable(GL_BLEND);
@@ -85,7 +75,16 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
             }
         }
     }
-    draw_instanced(block, scene.camera, shaders["mesh_array"], block_texture_grass, translations, N_blocks);
+    for(int i = 1; i <= BLOCK_TYPES; i++) {
+        if(translations[i].size() != 0) {
+            auto vec = translations[i];
+            int n = vec.size();
+            vec3* v = &vec[0];
+            draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);
+        }
+    }
+    /*if (wireframe)
+        draw(block, scene.camera, shaders["wireframe"]);*/
 }
 void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
 {
@@ -106,13 +105,9 @@ void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
                 if (k == Nz_surface)
                     blocks[k][j][i] = 1;
                 if (i == 0 || j == 0 || k == 0) {
-                    if(!draw_blocks[k][j][i])
-                        N_blocks++;
                     draw_blocks[k][j][i] = true;
                 }
                 else if (i == (Nx-1) || j == (Ny-1) || k == (Nz_surface)) {
-                    if(!draw_blocks[k][j][i])
-                        N_blocks++;
                     draw_blocks[k][j][i] = true;
                 }
             }
@@ -135,9 +130,6 @@ void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
                     blocks[k][j+1][i] == 0 || blocks[k][j-1][i] == 0 ||
                     blocks[k][j][i+1] == 0 || blocks[k][j][i-1] == 0){}
                 else {
-                    if(draw_blocks[k][j][i]) {
-                        N_blocks--;
-                    }
                     draw_blocks[k][j][i] = false;
                 }
 
@@ -167,29 +159,21 @@ void Grid::generate_surface(gui_scene_structure gui)
             const int block_z = Nz_surface + num_blocks;
             blocks[block_z][kv][ku] = 1;
             surface_z[kv][ku] = block_z;
-            if(!draw_blocks[block_z][kv][ku])
-                N_blocks++;
             draw_blocks[block_z][kv][ku] = true;
 
             if (num_blocks > 0){
                 for (size_t kz=1; kz < num_blocks; ++ kz){
                     blocks[kz + Nz_surface][kv][ku] = 2;
-                    if(!draw_blocks[kz + Nz_surface][kv][ku])
-                        N_blocks++;
                     draw_blocks[kz + Nz_surface][kv][ku] = true;
                 }
                 surface_z[kv][ku] = block_z;
             }else{
                 for (int kz=0; kz > num_blocks; -- kz){
                     blocks[kz + Nz_surface][kv][ku] = 0;
-                    if(draw_blocks[kz + Nz_surface][kv][ku])
-                        N_blocks--;
                     draw_blocks[kz + Nz_surface][kv][ku] = false;
                 }
                 for (int kz=1; kz < 4; ++ kz){
                     blocks[-kz + block_z][kv][ku] = 2;
-                    if(!draw_blocks[-kz + block_z][kv][ku])
-                        N_blocks++;
                     draw_blocks[-kz + block_z][kv][ku] = true;
                 }
                 surface_z[kv][ku] = block_z;
@@ -220,14 +204,10 @@ void Grid::generate_dungeons(gui_scene_structure gui)
 
                 if (p > gui.min_noise){
                     show_blocks += 1;
-                    if(!draw_blocks[k][j][i])
-                        N_blocks++;
                     draw_blocks[k][j][i] = true;
                     blocks[k][j][i] = 3;
                 }
                 else{
-                    if(draw_blocks[k][j][i])
-                        N_blocks--;
                     draw_blocks[k][j][i] = false;
                     blocks[k][j][i] = 0;
                 }
@@ -269,8 +249,6 @@ void Grid::generate_trees(gui_scene_structure gui)
             int s = size(gen);
             for (int t=1; t<=s; t++){
                 blocks[p_z+t][p_y][p_x] = 5;
-                if(!draw_blocks[p_z+t][p_y][p_x])
-                    N_blocks++;
                 draw_blocks[p_z+t][p_y][p_x] = true;
             }
 
@@ -297,8 +275,6 @@ void Grid::generate_trees(gui_scene_structure gui)
 
                         if (p > min_noise && blocks[k + height][j+p_y - n_y / 2][i + p_x - n_x / 2] != 6){
                             show_blocks += 1;
-                            if(!draw_blocks[k + height][j + p_y - n_y / 2][i + p_x - n_x / 2])
-                                N_blocks++;
                             draw_blocks[k + height][j + p_y - n_y / 2][i + p_x - n_x / 2] = true;
                             blocks[k + height][j + p_y - n_y / 2][i + p_x - n_x / 2] = 6;
                         }

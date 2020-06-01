@@ -134,7 +134,6 @@ void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 translations[],
     }
     assert(glIsVertexArray(gpu_data.vao));
     assert(glIsBuffer(gpu_data.vbo_index));
-    std::cout << len << std::endl;
 
     // store instance data in an array buffer
     unsigned int instanceVBO;
