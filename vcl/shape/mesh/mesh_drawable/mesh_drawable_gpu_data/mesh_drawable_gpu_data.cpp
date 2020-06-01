@@ -158,7 +158,8 @@ void draw_instanced(const mesh_drawable_gpu_data& gpu_data, vec3 translations[],
     // draw 100 instanced quads
     glBindVertexArray(gpu_data.vao);
     glDrawElementsInstanced(GL_TRIANGLES, GLsizei(gpu_data.number_triangles*3), GL_UNSIGNED_INT, nullptr, len);
-    //glDrawArraysInstanced(GL_TRIANGLES, 0, GLsizei(gpu_data.number_triangles*3), len);
+
+    glDeleteBuffers(1,&instanceVBO);
 
     }
 
