@@ -38,43 +38,6 @@ void Grid::setup()
 
 void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe) {
 
-    // create vector of translations
-    std::map<int,std::vector<vec3>> translations;
-    for(int i = 1; i <= BLOCK_TYPES; i++) {
-        translations[i] = {};
-    }
-    int count = 0;
-
-    for (int k=0; k<Nz; ++k){
-        for (int j=0; j<Ny; ++j){
-            for (int i=0; i<Nx; ++i){
-                if (blocks[k][j][i] != 0 && draw_blocks[k][j][i]) {
-                    if(blocks[k][j][i] != 0 ) {
-                        //block.uniform.transform.translation   = {i * step, j * step, k * step};
-                        translations[blocks[k][j][i]].push_back({i * step, j * step, k * step});
-                        count++; // TODO readd billboards
-                    }
-                    /*else {
-                        glEnable(GL_BLEND);
-                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        //glDepthMask(false);
-                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // avoids sampling artifacts
-                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // avoids sampling artifacts
-                        block_billboard.uniform.transform.translation = {i * step, j * step, k * step};
-                        if (blocks[k][j][i] == 6) {
-                            block_billboard.uniform.color = {0.1,0.9,0.1};
-                            draw(block_billboard, scene.camera, shaders["mesh"], block_texture_leave);
-                        }
-                        if (wireframe)
-                            draw(block_billboard, scene.camera, shaders["wireframe"]);
-                        //glDepthMask(true);
-                        glDisable(GL_BLEND);                    
-                    }*/
-                    //glBindTexture(GL_TEXTURE_2D, scene.texture_white);
-                }
-            }
-        }
-    }
     for(int i = 1; i <= BLOCK_TYPES; i++) {
         if(translations[i].size() != 0) {
             auto vec = translations[i];
@@ -137,6 +100,27 @@ void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
         }
     }
 
+    feed_translations();
+}
+
+void Grid::feed_translations() {
+    // create translations vector
+    for(int i = 1; i <= BLOCK_TYPES; i++) {
+        translations[i] = {};
+    }
+    int count = 0;
+
+    for (int k=0; k<Nz; ++k){
+        for (int j=0; j<Ny; ++j){
+            for (int i=0; i<Nx; ++i){
+                if (blocks[k][j][i] != 0 && draw_blocks[k][j][i]) {
+                    //block.uniform.transform.translation   = {i * step, j * step, k * step};
+                    translations[blocks[k][j][i]].push_back({i * step, j * step, k * step});
+                    count++; // TODO readd billboards
+                }
+            }
+        }
+    }
 }
 
 void Grid::generate_surface(gui_scene_structure gui)

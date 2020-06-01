@@ -21,7 +21,7 @@ public:
     std::vector<std::vector<std::vector<int>>> blocks; // 3D array that contains the type of block in the place
     std::vector<std::vector<std::vector<bool>>> draw_blocks; // 3D array
     std::vector<std::vector<int>> surface_z; // 3D array
-    //std::map<int,std::vector<vcl::vec3>> translations;
+    std::map<int,std::vector<vcl::vec3>> translations;
 
     // chunks -> here for futher optimisation
     // std::vector<std::map<vcl::vec3, std::vector<int>>> chunks;
@@ -34,6 +34,7 @@ public:
     void generate_dungeons(gui_scene_structure gui);
     void generate_trees(gui_scene_structure gui);
     void generate_river(gui_scene_structure gui);
+    void feed_translations();
 
     vcl::mesh_drawable block;
     vcl::mesh_drawable block_billboard;
