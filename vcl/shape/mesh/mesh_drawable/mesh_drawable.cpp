@@ -30,7 +30,6 @@ void mesh_drawable::update_normal(const vcl::buffer<vec3>& new_normal)
     data.update_normal(new_normal);
 }
 
-
 void draw(const mesh_drawable& drawable, const camera_scene& camera)
 {
     draw(drawable, camera, drawable.shader, drawable.texture_id);
@@ -129,4 +128,5 @@ void draw_instanced(const mesh_drawable& drawable, const camera_scene& camera, G
     uniform(shader, "specular_exponent", drawable.uniform.shading.specular_exponent); opengl_debug();
     vcl::draw_instanced(drawable.data, translations, len); opengl_debug();
 
+}
 }
