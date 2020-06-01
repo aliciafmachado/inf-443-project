@@ -12,13 +12,11 @@ using namespace vcl;
 #define LEAVE 6
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
-mesh create_block(float l);
-mesh create_billboard_block(float l);
 
 void Grid::setup()
 {
-    block = create_block(step / 2);
-    block_billboard = create_billboard_block(step / 2);
+    block = create_block(step / 2, false);
+    block_billboard = create_block(step / 2, true);
     block_billboard.uniform.shading = {1,0,0};
 
     block_textures = new GLuint[BLOCK_TYPES];
@@ -247,7 +245,6 @@ void Grid::generate_trees(gui_scene_structure gui)
             int n_z = d_n_z(gen);
 
             int height = s + p_z - 1;
-            std::cout << height << std::endl;
             for (int k = 1; k < n_z; k++){
                 for (int j = 0; j < n_y; j++){
                     for (int i = 0; i < n_x; i++){
@@ -304,94 +301,4 @@ float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui)
     const float z = p * pow(fabs(p), Se) * gui.height;
 
     return z;
-}
-
-mesh create_block(float l)
-{
-    mesh block;
-
-    const vec3 p000 = {-l,-l,-l};
-    const vec3 p001 = {-l,-l, l};
-    const vec3 p010 = {-l, l,-l};
-    const vec3 p011 = {-l, l, l};
-    const vec3 p100 = { l,-l,-l};
-    const vec3 p101 = { l,-l, l};
-    const vec3 p110 = { l, l,-l};
-    const vec3 p111 = { l, l, l};
-
-    block.position = {
-            p111, p011, p001, p101,
-            p101, p001, p000, p100,
-            p011, p001, p000, p010,
-            p111, p110, p101, p100,
-            p110, p010, p000, p100,
-            p111, p011, p010, p110
-    };
-
-    block.connectivity = {
-            {0,1,2}, {0,2,3}, {4,5,6}, {4,6,7},
-            {8,11,10}, {8,10,9}, {17,16,19}, {17,19,18},
-            {23,22,21}, {23,21,20}, {13,12,14}, {13,14,15}
-    };
-
-    const float e = 1e-3f;
-    const float u0 = 0.0f;
-    const float u1 = 0.25f+e;
-    const float u2 = 0.5f-e;
-    const float u3 = 0.75f-e;
-    const float u4 = 1.0f;
-    const float v0 = 0.0f;
-    const float v1 = 1.0f/3.0f+e;
-    const float v2 = 2.0f/3.0f-e;
-    const float v3 = 1.0f;
-    block.texture_uv = {
-            {u2,v1}, {u2,v0}, {u1,v0}, {u1,v1},
-            {u1,v1}, {u0,v1}, {u0,v2}, {u1,v2},
-            {u3,v1}, {u4,v1}, {u4,v2}, {u3,v2},
-            {u2,v1}, {u2,v2}, {u1,v1}, {u1,v2},
-            {u2,v2}, {u2,v3}, {u1,v3}, {u1,v2},
-            {u2,v1}, {u3,v1}, {u3,v2}, {u2,v2},
-    };
-
-    return block;
-
-}
-
-mesh create_billboard_block(float l) {
-    mesh block;
-
-    const vec3 p000 = {-l,-l,-l};
-    const vec3 p001 = {-l,-l, l};
-    const vec3 p010 = {-l, l,-l};
-    const vec3 p011 = {-l, l, l};
-    const vec3 p100 = { l,-l,-l};
-    const vec3 p101 = { l,-l, l};
-    const vec3 p110 = { l, l,-l};
-    const vec3 p111 = { l, l, l};
-
-    block.position = {
-            p111, p011, p001, p101,
-            p101, p001, p000, p100,
-            p011, p001, p000, p010,
-            p111, p110, p101, p100,
-            p110, p010, p000, p100,
-            p111, p011, p010, p110
-    };
-
-    block.connectivity = {
-            {0,1,2}, {0,2,3}, {4,5,6}, {4,6,7},
-            {8,11,10}, {8,10,9}, {17,16,19}, {17,19,18},
-            {23,22,21}, {23,21,20}, {13,12,14}, {13,14,15}
-    };
-
-    block.texture_uv = {
-            {0,1}, {1,1}, {1,0}, {0,0},
-            {0,1}, {1,1}, {1,0}, {0,0},
-            {0,1}, {1,1}, {1,0}, {0,0},
-            {0,1}, {1,1}, {1,0}, {0,0},
-            {0,1}, {1,1}, {1,0}, {0,0},
-            {0,1}, {1,1}, {1,0}, {0,0},
-    };
-
-    return block;
 }

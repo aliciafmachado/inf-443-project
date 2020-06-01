@@ -127,9 +127,6 @@ void draw_instanced(const mesh_drawable& drawable, const camera_scene& camera, G
     uniform(shader, "diffuse", drawable.uniform.shading.diffuse);      opengl_debug();
     uniform(shader, "specular", drawable.uniform.shading.specular);    opengl_debug();
     uniform(shader, "specular_exponent", drawable.uniform.shading.specular_exponent); opengl_debug();
-    std::cout << "mesh dr entering" <<std::endl;
     vcl::draw_instanced(drawable.data, translations, len); opengl_debug();
-    std::cout << "mesh dr coming out" <<std::endl;
-}
 
 }

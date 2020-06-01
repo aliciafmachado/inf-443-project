@@ -1,13 +1,14 @@
 #pragma once
 
 #include <vector>
+#include "block.hpp"
 #include "main/scene_base/base.hpp"
 #include "gui_scene_structure.hpp"
 
 class Grid
 {
 public:
-    size_t Nx_chunks = 4;
+    size_t Nx_chunks = 4; // TODO
     size_t Ny_chunks = 4;
     size_t N_dim_chunk = 16;
     size_t Nx = 64; // Number of blocks in x
