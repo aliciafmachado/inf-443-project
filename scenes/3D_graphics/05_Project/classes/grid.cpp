@@ -36,6 +36,8 @@ void Grid::setup()
 
 void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe) {
 
+    feed_translations();
+
     for(int i = 1; i <= BLOCK_TYPES; i++) {
         if(translations[i].size() != 0) {
             auto vec = translations[i];
