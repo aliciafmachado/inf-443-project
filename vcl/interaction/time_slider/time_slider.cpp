@@ -13,7 +13,7 @@ timer_interval_reversing::timer_interval_reversing()
 
 float timer_interval_reversing::update()
 {
-    assert(t_min<t_max);
+    //assert(t_min<t_max);
 
     if(!running)
         return 0.0f;

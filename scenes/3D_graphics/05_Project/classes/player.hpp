@@ -22,7 +22,8 @@ public:
     float dist_head;
 
     void setup(float scale, std::map<std::string,GLuint>& shaders, Grid* g_);
-    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_scene_structure gui_scene);
+    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_scene_structure gui_scene, int fps);
+    int fps;
 
     void keyboard_input(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods);
     void updatePosition(scene_structure& scene);

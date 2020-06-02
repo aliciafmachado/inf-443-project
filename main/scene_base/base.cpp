@@ -5,7 +5,7 @@ void scene_base::setup_data(std::map<std::string,GLuint>& , scene_structure& , g
 
 }
 
-void scene_base::frame_draw(std::map<std::string,GLuint>& , scene_structure& , gui_structure& )
+void scene_base::frame_draw(std::map<std::string,GLuint>& , scene_structure& , gui_structure&, int fps )
 {
 
 }

@@ -1,4 +1,4 @@
-# Install script for directory: /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl
+# Install script for directory: /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

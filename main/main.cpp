@@ -91,7 +91,8 @@ int main()
         gui_start_basic_structure(gui,scene);
 
         // Perform computation and draw calls for each iteration loop
-        scene_current.frame_draw(shaders, scene, gui); opengl_debug();
+        int fps_value = get_fps(fps_counter);
+        scene_current.frame_draw(shaders, scene, gui, fps_value); opengl_debug();
 
 
         // Render GUI and update window

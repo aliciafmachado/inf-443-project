@@ -11,9 +11,9 @@ public:
     size_t Nx_chunks = 4; // TODO
     size_t Ny_chunks = 4;
     size_t N_dim_chunk = 16;
-    size_t Nx = 64; // Number of blocks in x
-    size_t Ny = 64; // Number of blocks in y
-    size_t Nz = 60; // Number of blocks in z
+    size_t Nx = 180; // Number of blocks in x
+    size_t Ny = 180; // Number of blocks in y
+    size_t Nz = 300; // Number of blocks in z
     size_t Nz_dungeon = 30; // Number of blocks in z
     int Nz_surface = 32; // Number of blocks in z
     float step = 1 / (float) Nx; // Minimum step (Divide by the biggest N)
@@ -43,7 +43,7 @@ public:
     GLuint* block_textures;
 
     void setup();
-    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe);
+    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe, int fps);
 
     int position_to_block(vcl::vec3 p);
     vcl::vec3 blocks_to_position(int x, int y, int z);
