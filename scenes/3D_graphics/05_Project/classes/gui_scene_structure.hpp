@@ -20,9 +20,7 @@ struct gui_scene_structure
     float frequency = 2.0f;
     float min_noise = 0.65f;
 
-    int num_monsters = 1;
-
-    int trees = 400;
+    int trees = 1;
 };
 
 

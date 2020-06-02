@@ -11,7 +11,7 @@ using namespace vcl;
 #define WOOD 5
 #define LEAVE 6
 #define SAND 7
-#define WATER_HEIGHT 39
+#define WATER_HEIGHT 33
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 

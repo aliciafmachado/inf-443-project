@@ -2,8 +2,8 @@
 
 using namespace vcl;
 
-void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g_) {
-
+void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g_,  gui_scene_structure* gui) {
+    gui_scene = gui;
     g =  g_;
     // Scaling
     scale = scale_;
@@ -143,16 +143,16 @@ void Player::updatePosition(scene_structure &scene) {
 
         if (diving){
             if (jumping){
-                jump(scale * 0.02f * (400 / (float) (1.3f * fps)));
+                jump(scale * (float) fps  * ((float) fps * -0.000183f+0.039301f) / 3.0f);
                 falling = false;
             }else{
-                fall(scale * 25.30f * (400 / (float) fps));
+                fall(scale * (float) fps  * (173040.0411f*(float)pow((double)fps, (double)-1.8751f)) / 5.0f);
             }
         }
         else if (jumping)
-            jump(scale * 0.12f * (400 / (float) (1.3f * fps)));
+            jump(scale * (float) fps  * (-0.000183f*(float)fps+0.039301f));
         else if (falling)
-            fall(scale * 253.0f * (400 / (float) fps));
+            fall(scale * (float) fps * (173040.0411f*(float)pow((double)fps, (double)-1.8751f)));
         if (moving)
             move(speed);
         if (turning)
