@@ -21,7 +21,6 @@ struct gui_scene_structure
     float min_noise = 0.65f;
 
     int num_monsters = 1;
-
     int trees = 200;
 };
 

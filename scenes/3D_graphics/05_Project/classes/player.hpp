@@ -21,7 +21,7 @@ public:
     float dist_feet;
     float dist_head;
 
-    void setup(float scale, std::map<std::string,GLuint>& shaders, Grid* g_);
+    void setup(float scale, std::map<std::string,GLuint>& shaders, Grid* g_,  gui_scene_structure* gui);
     void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_scene_structure gui_scene, int fps);
     int fps;
 
@@ -84,4 +84,5 @@ public:
     void mouse_move(scene_structure& scene, GLFWwindow* window);
 
     bool check_water();
+    gui_scene_structure* gui_scene;
 };

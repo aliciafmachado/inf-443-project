@@ -15,7 +15,6 @@ using namespace vcl;
 #define MIN_WATER 50
 #define QTD_FLOWERS 20
 
-
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 
 void Grid::setup()

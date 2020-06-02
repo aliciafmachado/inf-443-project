@@ -176,10 +176,9 @@ void Monster::updatePosition(scene_structure &scene) {
     if (!find_player){
         if (moving) {
             if (jumping)
-                jump(scale * 0.04f * (400 / (float) (2.3f * fps)));
+                jump(scale * (float) fps  * (-0.000183f*(float)fps+0.039301f) / (3.61f));
             else if (falling)
-                fall(scale * 8500.0f * (400 / (float) fps));
-            move(speed, scene);
+                fall(scale * (float) fps * (173040.0411f*(float)pow((double)fps, (double)-1.8751f))/ (3.61f));
         }
         else if (turning){
             turn(speed_turn);

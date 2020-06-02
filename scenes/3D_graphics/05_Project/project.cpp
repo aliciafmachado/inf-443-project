@@ -18,7 +18,7 @@ void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_struct
     g.create_grid(gui_scene, gen);
 
     skybox.setup();
-    player.setup(g.step/1.9f, shaders, &g);
+    player.setup(g.step/1.9f, shaders, &g, &gui_scene);
     m1.setup(g.step*1.9f, shaders, &g, &player);
     //m2.setup(g.step*1.9f, shaders, &g, &player);
     //m3.setup(g.step*1.9f, shaders, &g, &player);
@@ -93,7 +93,6 @@ void scene_model::set_gui()
     ImGui::SliderFloat("Frequency", &gui_scene.frequency, frequency_gain_min, frequency_gain_max);
     ImGui::SliderFloat("Min noise", &gui_scene.min_noise, min_noise_min, min_noise_max);
     ImGui::SliderFloat("Se", &gui_scene.se, se_min, se_max);
-    ImGui::SliderInt("Trees", &gui_scene.trees, trees_min, trees_max);
 }
 
 void scene_model::keyboard_input(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods) {
