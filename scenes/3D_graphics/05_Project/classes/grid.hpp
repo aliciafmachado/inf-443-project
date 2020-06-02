@@ -11,9 +11,9 @@ public:
     size_t Nx_chunks = 4; // TODO
     size_t Ny_chunks = 4;
     size_t N_dim_chunk = 16;
-    size_t Nx = 64; // Number of blocks in x
-    size_t Ny = 64; // Number of blocks in y
-    size_t Nz = 60; // Number of blocks in z
+    size_t Nx = 128; // Number of blocks in x
+    size_t Ny = 128; // Number of blocks in y
+    size_t Nz = 100; // Number of blocks in z
     size_t Nz_dungeon = 30; // Number of blocks in z
     int Nz_surface = 32; // Number of blocks in z
     float step = 1 / (float) Nx; // Minimum step (Divide by the biggest N)

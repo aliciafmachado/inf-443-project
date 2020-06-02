@@ -10,17 +10,17 @@ struct gui_scene_structure
     bool generate_surface = true;
     bool generate_dungeons = true;
     bool generate_trees = true;
-    bool generate_river = false;
+    bool generate_river = true;
 
     float se = 0.2f;
     float height = 0.2f;
-    float scaling = 1.0f;
+    float scaling = 0.3f;
     int octave = 7;
     float persistency = 0.4f;
     float frequency = 2.0f;
     float min_noise = 0.65f;
 
-    int trees = 50;
+    int trees = 10;
 };
 
 
