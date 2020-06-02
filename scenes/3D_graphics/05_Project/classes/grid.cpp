@@ -10,6 +10,7 @@ using namespace vcl;
 #define WATER 4
 #define WOOD 5
 #define LEAVE 6
+#define WATER_HEIGHT 48
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 
@@ -44,6 +45,9 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
             int n = vec.size();
             vec3* v = &vec[0];
             draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);
+            /*if(wireframe)
+                draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);*/
+            glBindTexture(GL_TEXTURE_2D, scene.texture_white);
         }
     }
     /*if (wireframe)
@@ -80,10 +84,10 @@ void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
         generate_surface(gui);
     if( gui.generate_dungeons )
         generate_dungeons(gui);
-    if( gui.generate_trees )
-        generate_trees(gui);
     if( gui.generate_river )
         generate_river(gui);
+    if( gui.generate_trees )
+        generate_trees(gui);
 
     // Avoid drawing hidden blocks
     for (int k=1; k<Nz_dungeon-1; ++k) {
@@ -99,7 +103,6 @@ void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
             }
         }
     }
-
     feed_translations();
 }
 
@@ -139,6 +142,8 @@ void Grid::generate_surface(gui_scene_structure gui)
             const float z = evaluate_terrain_z(v,u, gui);
 
             const int num_blocks = z / step;
+
+            std::cout << ku << std::endl;
 
             const int block_z = Nz_surface + num_blocks;
             blocks[block_z][kv][ku] = 1;
@@ -271,7 +276,16 @@ void Grid::generate_trees(gui_scene_structure gui)
 
 void Grid::generate_river(gui_scene_structure gui)
 {
-    // TODO
+    for(int x = 0; x < Nx; x++) {
+        for(int y = 0; y < Ny; y++) {
+            if(surface_z[y][x] < WATER_HEIGHT) {
+                for(int h = WATER_HEIGHT; h > surface_z[y][x]; h--) {
+                    draw_blocks[h][y][x] = true;
+                    blocks[h][y][x] = 4;
+                }
+            }
+        }
+    }
 }
 
 int Grid::position_to_block(vec3 p)

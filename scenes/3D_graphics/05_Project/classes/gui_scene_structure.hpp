@@ -10,7 +10,7 @@ struct gui_scene_structure
     bool generate_surface = true;
     bool generate_dungeons = true;
     bool generate_trees = true;
-    bool generate_river = false;
+    bool generate_river = true;
 
     float se = 0.2f;
     float height = 0.05f;
