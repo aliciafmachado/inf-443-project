@@ -20,6 +20,7 @@ void Grid::setup()
     block = create_block(step / 2, false);
     block_simple = create_block(step / 2, true);
     block_simple.uniform.shading = {1,0,0};
+    block.uniform.shading = {0.4f, 0.4f, 0.8f};
 
     block_textures = new GLuint[BLOCK_TYPES];
     block_textures[0] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/grass.png"),

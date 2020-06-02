@@ -93,6 +93,28 @@ void Player::keyboard_input(scene_structure &scene, GLFWwindow *window, int key,
         moving_down = (glfwGetKey(window, GLFW_KEY_S));
         jumping = (glfwGetKey(window, GLFW_KEY_SPACE));
     }
+    if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL)){
+        const vec2 cursor = glfw_cursor_coordinates_window(window);
+
+        // Create the 3D ray passing by the selected point on the screen
+        const ray r = picking_ray(scene.camera, cursor);
+        float d = g->step/2.0f;
+
+        const vec3 b = r.p + r.u * d;
+        std::cout << "p = " << p << std::endl;
+        std::cout << "r.p = " << r.p << std::endl;
+        std::cout << "r.u = " <<r.u << std::endl;
+        std::cout << "d = " << d << std::endl;
+        while (d < 6 * g->step){
+            const vec3 b = r.p + r.u * d;
+            if (g->position_to_block(b) != 0 ){
+                g->delete_block(b);
+                std::cout << "b = " << b << std::endl;
+                break;
+            }
+            d += g->step/2.0f;
+        }
+    }
     moving_left = (glfwGetKey(window, GLFW_KEY_A));
     moving_right = (glfwGetKey(window, GLFW_KEY_D));
 
@@ -445,20 +467,16 @@ void Player::mouse_click(scene_structure& scene, GLFWwindow* window, int button,
     if (mouse_click_right){
         // Create the 3D ray passing by the selected point on the screen
         const ray r = picking_ray(scene.camera, cursor);
-        float d = g->step;
-        bool box = false;
-
+        float d = g->step/2.0f;
         const vec3 b = r.p + r.u * d;
 
-
-        while (d < 6 * g->step && !box){
+        while (d < 6 * g->step){
             const vec3 b = r.p + r.u * d;
-            // std::cout << g.position_to_block(b) << std::endl;
             if (g->position_to_block(b) != 0 ){
-                box = true;
                 g->delete_block(b);
+                break;
             }
-            d += g->step;
+            d += g->step/2.0f;
         }
     }
 
