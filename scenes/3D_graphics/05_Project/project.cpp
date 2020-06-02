@@ -20,8 +20,8 @@ void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_struct
     skybox.setup();
     player.setup(g.step/1.9f, shaders, &g);
     m1.setup(g.step*1.9f, shaders, &g, &player);
-    m2.setup(g.step*1.9f, shaders, &g, &player);
-    m3.setup(g.step*1.9f, shaders, &g, &player);
+    //m2.setup(g.step*1.9f, shaders, &g, &player);
+    //m3.setup(g.step*1.9f, shaders, &g, &player);
 
     // Setup initial camera mode and position
     scene.camera.camera_type = camera_control_spherical_coordinates;
@@ -44,8 +44,8 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
     g.frame_draw(shaders, scene, gui_scene.wireframe, fps);
     player.frame_draw(shaders, scene, gui_scene, fps);
     m1.frame_draw(shaders, scene, gui_scene, fps);
-    m2.frame_draw(shaders, scene, gui_scene, fps);
-    m3.frame_draw(shaders, scene, gui_scene, fps);
+   // m2.frame_draw(shaders, scene, gui_scene, fps);
+    //m3.frame_draw(shaders, scene, gui_scene, fps);
 }
 
 

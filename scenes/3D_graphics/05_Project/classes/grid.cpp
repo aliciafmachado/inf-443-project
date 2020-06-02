@@ -19,6 +19,7 @@ void Grid::setup()
     block = create_block(step / 2, false);
     block_billboard = create_block(step / 2, true);
     block_billboard.uniform.shading = {1,0,0};
+    block.uniform.shading = {0.4f, 0.4f, 0.8f};
 
     block_textures = new GLuint[BLOCK_TYPES];
     block_textures[0] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/grass.png"),
@@ -142,8 +143,6 @@ void Grid::generate_surface(gui_scene_structure gui)
             const float z = evaluate_terrain_z(v,u, gui);
 
             const int num_blocks = z / step;
-
-            std::cout << ku << std::endl;
 
             const int block_z = Nz_surface + num_blocks;
             blocks[block_z][kv][ku] = 1;
