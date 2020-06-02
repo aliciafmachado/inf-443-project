@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+#include <utility>
 #include <vector>
 #include "block.hpp"
 #include "main/scene_base/base.hpp"
@@ -13,7 +15,7 @@ public:
     size_t N_dim_chunk = 16;
     size_t Nx = 180; // Number of blocks in x
     size_t Ny = 180; // Number of blocks in y
-    size_t Nz = 300; // Number of blocks in z
+    size_t Nz = 1000; // Number of blocks in z
     size_t Nz_dungeon = 30; // Number of blocks in z
     int Nz_surface = 31; // Number of blocks in z
     float step = 1 / (float) Nx; // Minimum step (Divide by the biggest N)

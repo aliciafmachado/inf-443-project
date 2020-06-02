@@ -39,6 +39,28 @@ void Grid::setup()
                                              GL_REPEAT, GL_REPEAT );
 }
 
+/*bool sort_function(std::pair<int, float> i, std::pair<int, float> j) {
+    return i.second > j.second;
+}
+
+void sort_order(std::vector<vec3> &tr, vec3 cam_pos) {
+    std::vector<std::pair<int, float>> sorted;
+    for(int i = 0; i < tr.size(); i++) {
+        float dist = pow(tr[i][0] - cam_pos[0], 2) + pow(tr[i][1] - cam_pos[1], 2) 
+        + pow(tr[i][2] - cam_pos[2], 2);
+
+        sorted.push_back(std::pair<int, float> (i, dist));
+    }
+
+    std::sort(sorted.begin(), sorted.end(), sort_function);
+
+    float aux;
+    std::vector<vec3> tr_copy(tr);
+    for(int i = 0; i < tr.size(); i++) {
+        tr[i] = tr_copy[sorted[i].first];
+    }
+}*/
+
 void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe, int fps) {
 
     feed_translations();
@@ -46,8 +68,9 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
     for(int i = 1; i <= BLOCK_TYPES; i++) {
         if(translations[i].size() != 0) {
             /*if(i == 4 || i == 6) {
+                sort_order(translations[i], scene.camera.translation);
                 glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
                 block.uniform.color_alpha = 0.7;
             }*/
             auto vec = translations[i];
