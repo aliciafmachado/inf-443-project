@@ -35,7 +35,7 @@ void Grid::setup()
                                              GL_REPEAT, GL_REPEAT );
 }
 
-void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe) {
+void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe, int fps) {
 
     feed_translations();
 

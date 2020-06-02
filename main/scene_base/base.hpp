@@ -36,7 +36,7 @@ struct scene_base
     */
 
     void setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui);
-    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui);
+    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui, int fps_value);
 
     void mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods);
     void mouse_move(scene_structure& scene, GLFWwindow* window);

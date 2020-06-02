@@ -48,10 +48,10 @@ RM = /home/iago/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/193.6494.38/bin/c
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl
+CMAKE_SOURCE_DIR = /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl/cmake-build-debug
+CMAKE_BINARY_DIR = /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl/cmake-build-debug/CMakeFiles /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/cmake-build-debug/CMakeFiles /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -204,248 +204,140 @@ main/scene_base/base.cpp.s:
 	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/main/scene_base/base.cpp.s
 .PHONY : main/scene_base/base.cpp.s
 
-scenes/3D_graphics/00_default/default.o: scenes/3D_graphics/00_default/default.cpp.o
+scenes/3D_graphics/05_Project/classes/block.o: scenes/3D_graphics/05_Project/classes/block.cpp.o
 
-.PHONY : scenes/3D_graphics/00_default/default.o
-
-# target to build an object file
-scenes/3D_graphics/00_default/default.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/00_default/default.cpp.o
-.PHONY : scenes/3D_graphics/00_default/default.cpp.o
-
-scenes/3D_graphics/00_default/default.i: scenes/3D_graphics/00_default/default.cpp.i
-
-.PHONY : scenes/3D_graphics/00_default/default.i
-
-# target to preprocess a source file
-scenes/3D_graphics/00_default/default.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/00_default/default.cpp.i
-.PHONY : scenes/3D_graphics/00_default/default.cpp.i
-
-scenes/3D_graphics/00_default/default.s: scenes/3D_graphics/00_default/default.cpp.s
-
-.PHONY : scenes/3D_graphics/00_default/default.s
-
-# target to generate assembly for a file
-scenes/3D_graphics/00_default/default.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/00_default/default.cpp.s
-.PHONY : scenes/3D_graphics/00_default/default.cpp.s
-
-scenes/3D_graphics/01_modeling/modeling.o: scenes/3D_graphics/01_modeling/modeling.cpp.o
-
-.PHONY : scenes/3D_graphics/01_modeling/modeling.o
+.PHONY : scenes/3D_graphics/05_Project/classes/block.o
 
 # target to build an object file
-scenes/3D_graphics/01_modeling/modeling.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/01_modeling/modeling.cpp.o
-.PHONY : scenes/3D_graphics/01_modeling/modeling.cpp.o
+scenes/3D_graphics/05_Project/classes/block.cpp.o:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/block.cpp.o
+.PHONY : scenes/3D_graphics/05_Project/classes/block.cpp.o
 
-scenes/3D_graphics/01_modeling/modeling.i: scenes/3D_graphics/01_modeling/modeling.cpp.i
+scenes/3D_graphics/05_Project/classes/block.i: scenes/3D_graphics/05_Project/classes/block.cpp.i
 
-.PHONY : scenes/3D_graphics/01_modeling/modeling.i
+.PHONY : scenes/3D_graphics/05_Project/classes/block.i
 
 # target to preprocess a source file
-scenes/3D_graphics/01_modeling/modeling.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/01_modeling/modeling.cpp.i
-.PHONY : scenes/3D_graphics/01_modeling/modeling.cpp.i
+scenes/3D_graphics/05_Project/classes/block.cpp.i:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/block.cpp.i
+.PHONY : scenes/3D_graphics/05_Project/classes/block.cpp.i
 
-scenes/3D_graphics/01_modeling/modeling.s: scenes/3D_graphics/01_modeling/modeling.cpp.s
+scenes/3D_graphics/05_Project/classes/block.s: scenes/3D_graphics/05_Project/classes/block.cpp.s
 
-.PHONY : scenes/3D_graphics/01_modeling/modeling.s
+.PHONY : scenes/3D_graphics/05_Project/classes/block.s
 
 # target to generate assembly for a file
-scenes/3D_graphics/01_modeling/modeling.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/01_modeling/modeling.cpp.s
-.PHONY : scenes/3D_graphics/01_modeling/modeling.cpp.s
+scenes/3D_graphics/05_Project/classes/block.cpp.s:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/block.cpp.s
+.PHONY : scenes/3D_graphics/05_Project/classes/block.cpp.s
 
-scenes/3D_graphics/02_texture/example_billboard.o: scenes/3D_graphics/02_texture/example_billboard.cpp.o
+scenes/3D_graphics/05_Project/classes/grid.o: scenes/3D_graphics/05_Project/classes/grid.cpp.o
 
-.PHONY : scenes/3D_graphics/02_texture/example_billboard.o
+.PHONY : scenes/3D_graphics/05_Project/classes/grid.o
 
 # target to build an object file
-scenes/3D_graphics/02_texture/example_billboard.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_billboard.cpp.o
-.PHONY : scenes/3D_graphics/02_texture/example_billboard.cpp.o
+scenes/3D_graphics/05_Project/classes/grid.cpp.o:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/grid.cpp.o
+.PHONY : scenes/3D_graphics/05_Project/classes/grid.cpp.o
 
-scenes/3D_graphics/02_texture/example_billboard.i: scenes/3D_graphics/02_texture/example_billboard.cpp.i
+scenes/3D_graphics/05_Project/classes/grid.i: scenes/3D_graphics/05_Project/classes/grid.cpp.i
 
-.PHONY : scenes/3D_graphics/02_texture/example_billboard.i
+.PHONY : scenes/3D_graphics/05_Project/classes/grid.i
 
 # target to preprocess a source file
-scenes/3D_graphics/02_texture/example_billboard.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_billboard.cpp.i
-.PHONY : scenes/3D_graphics/02_texture/example_billboard.cpp.i
+scenes/3D_graphics/05_Project/classes/grid.cpp.i:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/grid.cpp.i
+.PHONY : scenes/3D_graphics/05_Project/classes/grid.cpp.i
 
-scenes/3D_graphics/02_texture/example_billboard.s: scenes/3D_graphics/02_texture/example_billboard.cpp.s
+scenes/3D_graphics/05_Project/classes/grid.s: scenes/3D_graphics/05_Project/classes/grid.cpp.s
 
-.PHONY : scenes/3D_graphics/02_texture/example_billboard.s
+.PHONY : scenes/3D_graphics/05_Project/classes/grid.s
 
 # target to generate assembly for a file
-scenes/3D_graphics/02_texture/example_billboard.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_billboard.cpp.s
-.PHONY : scenes/3D_graphics/02_texture/example_billboard.cpp.s
+scenes/3D_graphics/05_Project/classes/grid.cpp.s:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/grid.cpp.s
+.PHONY : scenes/3D_graphics/05_Project/classes/grid.cpp.s
 
-scenes/3D_graphics/02_texture/example_perlin.o: scenes/3D_graphics/02_texture/example_perlin.cpp.o
+scenes/3D_graphics/05_Project/classes/monster.o: scenes/3D_graphics/05_Project/classes/monster.cpp.o
 
-.PHONY : scenes/3D_graphics/02_texture/example_perlin.o
+.PHONY : scenes/3D_graphics/05_Project/classes/monster.o
 
 # target to build an object file
-scenes/3D_graphics/02_texture/example_perlin.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_perlin.cpp.o
-.PHONY : scenes/3D_graphics/02_texture/example_perlin.cpp.o
+scenes/3D_graphics/05_Project/classes/monster.cpp.o:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/monster.cpp.o
+.PHONY : scenes/3D_graphics/05_Project/classes/monster.cpp.o
 
-scenes/3D_graphics/02_texture/example_perlin.i: scenes/3D_graphics/02_texture/example_perlin.cpp.i
+scenes/3D_graphics/05_Project/classes/monster.i: scenes/3D_graphics/05_Project/classes/monster.cpp.i
 
-.PHONY : scenes/3D_graphics/02_texture/example_perlin.i
+.PHONY : scenes/3D_graphics/05_Project/classes/monster.i
 
 # target to preprocess a source file
-scenes/3D_graphics/02_texture/example_perlin.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_perlin.cpp.i
-.PHONY : scenes/3D_graphics/02_texture/example_perlin.cpp.i
+scenes/3D_graphics/05_Project/classes/monster.cpp.i:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/monster.cpp.i
+.PHONY : scenes/3D_graphics/05_Project/classes/monster.cpp.i
 
-scenes/3D_graphics/02_texture/example_perlin.s: scenes/3D_graphics/02_texture/example_perlin.cpp.s
+scenes/3D_graphics/05_Project/classes/monster.s: scenes/3D_graphics/05_Project/classes/monster.cpp.s
 
-.PHONY : scenes/3D_graphics/02_texture/example_perlin.s
+.PHONY : scenes/3D_graphics/05_Project/classes/monster.s
 
 # target to generate assembly for a file
-scenes/3D_graphics/02_texture/example_perlin.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_perlin.cpp.s
-.PHONY : scenes/3D_graphics/02_texture/example_perlin.cpp.s
+scenes/3D_graphics/05_Project/classes/monster.cpp.s:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/monster.cpp.s
+.PHONY : scenes/3D_graphics/05_Project/classes/monster.cpp.s
 
-scenes/3D_graphics/02_texture/example_texture.o: scenes/3D_graphics/02_texture/example_texture.cpp.o
+scenes/3D_graphics/05_Project/classes/player.o: scenes/3D_graphics/05_Project/classes/player.cpp.o
 
-.PHONY : scenes/3D_graphics/02_texture/example_texture.o
+.PHONY : scenes/3D_graphics/05_Project/classes/player.o
 
 # target to build an object file
-scenes/3D_graphics/02_texture/example_texture.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_texture.cpp.o
-.PHONY : scenes/3D_graphics/02_texture/example_texture.cpp.o
+scenes/3D_graphics/05_Project/classes/player.cpp.o:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/player.cpp.o
+.PHONY : scenes/3D_graphics/05_Project/classes/player.cpp.o
 
-scenes/3D_graphics/02_texture/example_texture.i: scenes/3D_graphics/02_texture/example_texture.cpp.i
+scenes/3D_graphics/05_Project/classes/player.i: scenes/3D_graphics/05_Project/classes/player.cpp.i
 
-.PHONY : scenes/3D_graphics/02_texture/example_texture.i
+.PHONY : scenes/3D_graphics/05_Project/classes/player.i
 
 # target to preprocess a source file
-scenes/3D_graphics/02_texture/example_texture.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_texture.cpp.i
-.PHONY : scenes/3D_graphics/02_texture/example_texture.cpp.i
+scenes/3D_graphics/05_Project/classes/player.cpp.i:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/player.cpp.i
+.PHONY : scenes/3D_graphics/05_Project/classes/player.cpp.i
 
-scenes/3D_graphics/02_texture/example_texture.s: scenes/3D_graphics/02_texture/example_texture.cpp.s
+scenes/3D_graphics/05_Project/classes/player.s: scenes/3D_graphics/05_Project/classes/player.cpp.s
 
-.PHONY : scenes/3D_graphics/02_texture/example_texture.s
+.PHONY : scenes/3D_graphics/05_Project/classes/player.s
 
 # target to generate assembly for a file
-scenes/3D_graphics/02_texture/example_texture.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/02_texture/example_texture.cpp.s
-.PHONY : scenes/3D_graphics/02_texture/example_texture.cpp.s
+scenes/3D_graphics/05_Project/classes/player.cpp.s:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/player.cpp.s
+.PHONY : scenes/3D_graphics/05_Project/classes/player.cpp.s
 
-scenes/3D_graphics/03_animation/articulated_hierarchy.o: scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.o
+scenes/3D_graphics/05_Project/classes/skybox.o: scenes/3D_graphics/05_Project/classes/skybox.cpp.o
 
-.PHONY : scenes/3D_graphics/03_animation/articulated_hierarchy.o
+.PHONY : scenes/3D_graphics/05_Project/classes/skybox.o
 
 # target to build an object file
-scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.o
-.PHONY : scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.o
+scenes/3D_graphics/05_Project/classes/skybox.cpp.o:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/skybox.cpp.o
+.PHONY : scenes/3D_graphics/05_Project/classes/skybox.cpp.o
 
-scenes/3D_graphics/03_animation/articulated_hierarchy.i: scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.i
+scenes/3D_graphics/05_Project/classes/skybox.i: scenes/3D_graphics/05_Project/classes/skybox.cpp.i
 
-.PHONY : scenes/3D_graphics/03_animation/articulated_hierarchy.i
-
-# target to preprocess a source file
-scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.i
-.PHONY : scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.i
-
-scenes/3D_graphics/03_animation/articulated_hierarchy.s: scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.s
-
-.PHONY : scenes/3D_graphics/03_animation/articulated_hierarchy.s
-
-# target to generate assembly for a file
-scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.s
-.PHONY : scenes/3D_graphics/03_animation/articulated_hierarchy.cpp.s
-
-scenes/3D_graphics/03_animation/interpolation_position.o: scenes/3D_graphics/03_animation/interpolation_position.cpp.o
-
-.PHONY : scenes/3D_graphics/03_animation/interpolation_position.o
-
-# target to build an object file
-scenes/3D_graphics/03_animation/interpolation_position.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/03_animation/interpolation_position.cpp.o
-.PHONY : scenes/3D_graphics/03_animation/interpolation_position.cpp.o
-
-scenes/3D_graphics/03_animation/interpolation_position.i: scenes/3D_graphics/03_animation/interpolation_position.cpp.i
-
-.PHONY : scenes/3D_graphics/03_animation/interpolation_position.i
+.PHONY : scenes/3D_graphics/05_Project/classes/skybox.i
 
 # target to preprocess a source file
-scenes/3D_graphics/03_animation/interpolation_position.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/03_animation/interpolation_position.cpp.i
-.PHONY : scenes/3D_graphics/03_animation/interpolation_position.cpp.i
+scenes/3D_graphics/05_Project/classes/skybox.cpp.i:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/skybox.cpp.i
+.PHONY : scenes/3D_graphics/05_Project/classes/skybox.cpp.i
 
-scenes/3D_graphics/03_animation/interpolation_position.s: scenes/3D_graphics/03_animation/interpolation_position.cpp.s
+scenes/3D_graphics/05_Project/classes/skybox.s: scenes/3D_graphics/05_Project/classes/skybox.cpp.s
 
-.PHONY : scenes/3D_graphics/03_animation/interpolation_position.s
-
-# target to generate assembly for a file
-scenes/3D_graphics/03_animation/interpolation_position.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/03_animation/interpolation_position.cpp.s
-.PHONY : scenes/3D_graphics/03_animation/interpolation_position.cpp.s
-
-scenes/3D_graphics/04_simulation/example_mass_spring.o: scenes/3D_graphics/04_simulation/example_mass_spring.cpp.o
-
-.PHONY : scenes/3D_graphics/04_simulation/example_mass_spring.o
-
-# target to build an object file
-scenes/3D_graphics/04_simulation/example_mass_spring.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/04_simulation/example_mass_spring.cpp.o
-.PHONY : scenes/3D_graphics/04_simulation/example_mass_spring.cpp.o
-
-scenes/3D_graphics/04_simulation/example_mass_spring.i: scenes/3D_graphics/04_simulation/example_mass_spring.cpp.i
-
-.PHONY : scenes/3D_graphics/04_simulation/example_mass_spring.i
-
-# target to preprocess a source file
-scenes/3D_graphics/04_simulation/example_mass_spring.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/04_simulation/example_mass_spring.cpp.i
-.PHONY : scenes/3D_graphics/04_simulation/example_mass_spring.cpp.i
-
-scenes/3D_graphics/04_simulation/example_mass_spring.s: scenes/3D_graphics/04_simulation/example_mass_spring.cpp.s
-
-.PHONY : scenes/3D_graphics/04_simulation/example_mass_spring.s
+.PHONY : scenes/3D_graphics/05_Project/classes/skybox.s
 
 # target to generate assembly for a file
-scenes/3D_graphics/04_simulation/example_mass_spring.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/04_simulation/example_mass_spring.cpp.s
-.PHONY : scenes/3D_graphics/04_simulation/example_mass_spring.cpp.s
-
-scenes/3D_graphics/04_simulation/example_sphere_gravity.o: scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.o
-
-.PHONY : scenes/3D_graphics/04_simulation/example_sphere_gravity.o
-
-# target to build an object file
-scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.o:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.o
-.PHONY : scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.o
-
-scenes/3D_graphics/04_simulation/example_sphere_gravity.i: scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.i
-
-.PHONY : scenes/3D_graphics/04_simulation/example_sphere_gravity.i
-
-# target to preprocess a source file
-scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.i:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.i
-.PHONY : scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.i
-
-scenes/3D_graphics/04_simulation/example_sphere_gravity.s: scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.s
-
-.PHONY : scenes/3D_graphics/04_simulation/example_sphere_gravity.s
-
-# target to generate assembly for a file
-scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.s:
-	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.s
-.PHONY : scenes/3D_graphics/04_simulation/example_sphere_gravity.cpp.s
+scenes/3D_graphics/05_Project/classes/skybox.cpp.s:
+	$(MAKE) -f CMakeFiles/pgm.dir/build.make CMakeFiles/pgm.dir/scenes/3D_graphics/05_Project/classes/skybox.cpp.s
+.PHONY : scenes/3D_graphics/05_Project/classes/skybox.cpp.s
 
 scenes/3D_graphics/05_Project/project.o: scenes/3D_graphics/05_Project/project.cpp.o
 
@@ -2112,33 +2004,21 @@ help:
 	@echo "... main/scene_base/base.o"
 	@echo "... main/scene_base/base.i"
 	@echo "... main/scene_base/base.s"
-	@echo "... scenes/3D_graphics/00_default/default.o"
-	@echo "... scenes/3D_graphics/00_default/default.i"
-	@echo "... scenes/3D_graphics/00_default/default.s"
-	@echo "... scenes/3D_graphics/01_modeling/modeling.o"
-	@echo "... scenes/3D_graphics/01_modeling/modeling.i"
-	@echo "... scenes/3D_graphics/01_modeling/modeling.s"
-	@echo "... scenes/3D_graphics/02_texture/example_billboard.o"
-	@echo "... scenes/3D_graphics/02_texture/example_billboard.i"
-	@echo "... scenes/3D_graphics/02_texture/example_billboard.s"
-	@echo "... scenes/3D_graphics/02_texture/example_perlin.o"
-	@echo "... scenes/3D_graphics/02_texture/example_perlin.i"
-	@echo "... scenes/3D_graphics/02_texture/example_perlin.s"
-	@echo "... scenes/3D_graphics/02_texture/example_texture.o"
-	@echo "... scenes/3D_graphics/02_texture/example_texture.i"
-	@echo "... scenes/3D_graphics/02_texture/example_texture.s"
-	@echo "... scenes/3D_graphics/03_animation/articulated_hierarchy.o"
-	@echo "... scenes/3D_graphics/03_animation/articulated_hierarchy.i"
-	@echo "... scenes/3D_graphics/03_animation/articulated_hierarchy.s"
-	@echo "... scenes/3D_graphics/03_animation/interpolation_position.o"
-	@echo "... scenes/3D_graphics/03_animation/interpolation_position.i"
-	@echo "... scenes/3D_graphics/03_animation/interpolation_position.s"
-	@echo "... scenes/3D_graphics/04_simulation/example_mass_spring.o"
-	@echo "... scenes/3D_graphics/04_simulation/example_mass_spring.i"
-	@echo "... scenes/3D_graphics/04_simulation/example_mass_spring.s"
-	@echo "... scenes/3D_graphics/04_simulation/example_sphere_gravity.o"
-	@echo "... scenes/3D_graphics/04_simulation/example_sphere_gravity.i"
-	@echo "... scenes/3D_graphics/04_simulation/example_sphere_gravity.s"
+	@echo "... scenes/3D_graphics/05_Project/classes/block.o"
+	@echo "... scenes/3D_graphics/05_Project/classes/block.i"
+	@echo "... scenes/3D_graphics/05_Project/classes/block.s"
+	@echo "... scenes/3D_graphics/05_Project/classes/grid.o"
+	@echo "... scenes/3D_graphics/05_Project/classes/grid.i"
+	@echo "... scenes/3D_graphics/05_Project/classes/grid.s"
+	@echo "... scenes/3D_graphics/05_Project/classes/monster.o"
+	@echo "... scenes/3D_graphics/05_Project/classes/monster.i"
+	@echo "... scenes/3D_graphics/05_Project/classes/monster.s"
+	@echo "... scenes/3D_graphics/05_Project/classes/player.o"
+	@echo "... scenes/3D_graphics/05_Project/classes/player.i"
+	@echo "... scenes/3D_graphics/05_Project/classes/player.s"
+	@echo "... scenes/3D_graphics/05_Project/classes/skybox.o"
+	@echo "... scenes/3D_graphics/05_Project/classes/skybox.i"
+	@echo "... scenes/3D_graphics/05_Project/classes/skybox.s"
 	@echo "... scenes/3D_graphics/05_Project/project.o"
 	@echo "... scenes/3D_graphics/05_Project/project.i"
 	@echo "... scenes/3D_graphics/05_Project/project.s"

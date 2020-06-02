@@ -13,14 +13,15 @@ struct gui_scene_structure
     bool generate_river = true;
 
     float se = 0.2f;
-    float height = 0.2f;
-    float scaling = 0.3f;
+    float height = 0.05f;
+    float scaling = 1.0f;
     int octave = 7;
     float persistency = 0.4f;
     float frequency = 2.0f;
     float min_noise = 0.65f;
 
-    int trees = 10;
+    int num_monsters = 1;
+    int trees = 50;
 };
 
 

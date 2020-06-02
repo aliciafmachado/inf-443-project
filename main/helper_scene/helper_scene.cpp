@@ -96,6 +96,11 @@ void update_fps_title(GLFWwindow* window, const std::string& title, glfw_fps_cou
     }
 }
 
+int get_fps(glfw_fps_counter& fps_counter)
+{
+    return fps_counter.fps();
+}
+
 void gui_start_basic_structure(gui_structure& gui, scene_structure& scene)
 {
     imgui_create_frame();
@@ -116,3 +121,5 @@ void gui_start_basic_structure(gui_structure& gui, scene_structure& scene)
         draw(scene.frame_worldspace, scene.camera);
 
 }
+
+

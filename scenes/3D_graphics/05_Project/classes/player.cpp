@@ -34,7 +34,7 @@ void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g_
     std::uniform_int_distribution<int> start_x(0, g->Nx);
     std::uniform_int_distribution<int> start_y(0, g->Ny);
     std::default_random_engine generator;
-    generator.seed(5);
+    generator.seed(time(NULL));
     create_player();
 
     x = start_x(generator);
@@ -62,8 +62,12 @@ void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g_
     hierarchy["body"].transform.translation = p;
 }
 
-void Player::frame_draw(std::map<std::string, GLuint> &shaders, scene_structure &scene, gui_scene_structure gui_scene) {
-
+void Player::frame_draw(std::map<std::string, GLuint> &shaders, scene_structure &scene, gui_scene_structure gui_scene, int fps_)
+{
+    if (fps_ == 0)
+        fps = 10;
+    else
+        fps = fps_;
     timer.update();
     updatePosition(scene);
     updateCamera(scene);
@@ -103,9 +107,8 @@ void Player::updatePosition(scene_structure &scene) {
 
     moving = moving_up || moving_down || jumping || falling;
     bool turning = moving_left || moving_right;
-
-    float speed = g->step / 2;
-    float speed_turn = M_PI / 16;
+    float speed = g->step / 27.0f * (400 / (float) fps);
+    float speed_turn = M_PI / (16*27.0f) * (400 / (float) fps);
     if (moving || turning) {
 
         mat3 const Symmetry = {-1, 0, 0, 0, 1, 0, 0, 0, 1};
@@ -123,9 +126,9 @@ void Player::updatePosition(scene_structure &scene) {
         hierarchy["mov_arm_left"].transform.rotation = Symmetry * R_arm;
 
         if (jumping)
-            jump(scale * 0.8f);
+            jump(scale * 0.12f * (400 / (float) (1.3f * fps)));
         else if (falling)
-            fall(scale * 80.0f);
+            fall(scale * 253.0f * (400 / (float) fps));
         if (moving)
             move(speed);
         if (turning)
@@ -147,15 +150,17 @@ void Player::updatePosition(scene_structure &scene) {
         v = vec3{0, 0,0};
     }
 
-    z =  (int) ((p.z-leg_z +g->step/2.0f - error) / g->step);
-    p.z = (float) z*g->step + leg_z + g->step/2.0f;
+    if (!falling){
+        z =  (int) ((p.z-leg_z +g->step/2.0f - error) / g->step);
+        p.z = (float) z*g->step + leg_z + g->step/2.0f;
+    }
+
 
     hierarchy["body"].transform.translation = p;
 }
 
 void Player::jump(float initial_speed)
 {
-
     v = v + vec3({0, 0, initial_speed});
     falling = true;
     jumping = false;
@@ -164,7 +169,14 @@ void Player::jump(float initial_speed)
 
 void Player::fall(float m)
 {
-    v = v - vec3{0, 0, g->step/4.0f};
+
+    const float dt = timer.update(); // dt: Elapsed time between last frame
+    const vec3 g = {0.0f,0.0f,-9.81f};
+    const vec3 F = m*g;
+
+    // Numerical integration
+    v = v + dt*F;
+
 }
 
 
@@ -212,7 +224,6 @@ void Player::move(float speed)
         p.z = (float) z*g->step + leg_z + g->step/2.0f;
     }
 
-    hierarchy["body"].transform.translation = p;
 
     if (!falling && !down){
         falling = true;
@@ -380,7 +391,7 @@ bool Player::check_up()
 
 void Player::updateCamera(scene_structure &scene) {
 
-    float speed_turn_camera = M_PI / 16;
+    float speed_turn_camera = M_PI / (16*27.0f) * 400 / ((float) fps);
 
     if (moving_left) {
         camera_angle += speed_turn_camera;
@@ -406,7 +417,7 @@ void Player::updateCamera(scene_structure &scene) {
 
     float dc = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
     float teta = atan((size/2.0f)/(body_y/2.0f));
-    float d = distance + g->step/2.0f;
+    float d = distance + g->step/1.4f;
     vec3 ahead = vec3{ d * (float) cos(angle), d * (float)-sin(angle), d};
     vec3 center = vec3{dc * (float)sin(angle+teta),dc*(float)cos(angle+teta), 0 };
     scene.camera.translation = - p - center- ahead;

@@ -5,7 +5,7 @@
 class Skybox {
 public:
     void setup();
-    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe);
+    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe, int fps);
 private:
     GLuint skybox_texture;
     vcl::mesh_drawable skybox;

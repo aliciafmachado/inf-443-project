@@ -16,7 +16,7 @@ void Skybox::setup() {
 }
 
 
-void Skybox::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe) {
+void Skybox::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe, int fps) {
 
     glBindTexture(GL_TEXTURE_2D, skybox_texture);
     skybox.uniform.transform.translation = scene.camera.camera_position() + vec3(0,0,-25.0f);

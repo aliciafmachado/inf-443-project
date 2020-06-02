@@ -6,5 +6,5 @@ CXX_FLAGS = -g   -g -O2 -std=c++11 -Wall -Wextra
 
 CXX_DEFINES = -DGLFW_DLL -DIMGUI_IMPL_OPENGL_LOADER_GLAD
 
-CXX_INCLUDES = -I/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl/. -I/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf443_vcl/third_party/eigen 
+CXX_INCLUDES = -I/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/. -I/home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project/third_party/eigen 
 

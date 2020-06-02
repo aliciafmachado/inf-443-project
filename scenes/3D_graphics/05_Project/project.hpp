@@ -26,16 +26,19 @@ struct scene_model : scene_base
     */
 
     void setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui);
-    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui);
+    void frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui, int fps_value);
 
     Skybox skybox;
     Grid g;
     Player player;
+    Monster m1;
+    Monster m2;
+    Monster m3;
 
     gui_scene_structure gui_scene;
     void set_gui();
 
-
+    int fps;
 
     // Interaction
     void mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods);
