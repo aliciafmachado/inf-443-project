@@ -11,7 +11,7 @@ using namespace vcl;
 #define WOOD 5
 #define LEAVE 6
 #define SAND 7
-#define WATER_HEIGHT 35
+#define WATER_HEIGHT 39
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 
@@ -304,7 +304,6 @@ void Grid::generate_river(gui_scene_structure gui)
                 for(int h = WATER_HEIGHT; h > surface_z[y][x]; h--) {
                     if(initialize < 100 || near_block(x, y, h, WATER, 1, false)) {
                         count++;
-                        std::cout <<count << std::endl;
                         draw_blocks[h][y][x] = true;
                         blocks[h][y][x] = 4;
                         int numbers[3] = {h,y,x};
@@ -366,7 +365,7 @@ void Grid::delete_block(vec3 p){
     int y = p[1] / step;
     int z = p[2] / step;
 
-
+    //std::cout << "x = " << x << ", y = " << y << ", z = " << z << std::endl;
     blocks[z][y][x] = 0;
 
     draw_blocks[z][y][x] = false;

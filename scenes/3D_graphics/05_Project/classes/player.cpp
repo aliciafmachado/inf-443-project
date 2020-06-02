@@ -25,8 +25,6 @@ void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g_
 
     bool find_start_place = false;
 
-
-
     distance = 1.2f * scale;
     error = leg_z / 10.0f;
     v = {0, 0, 0};
@@ -100,16 +98,12 @@ void Player::keyboard_input(scene_structure &scene, GLFWwindow *window, int key,
         const ray r = picking_ray(scene.camera, cursor);
         float d = g->step/2.0f;
 
-        const vec3 b = r.p + r.u * d;
-        std::cout << "p = " << p << std::endl;
-        std::cout << "r.p = " << r.p << std::endl;
-        std::cout << "r.u = " <<r.u << std::endl;
-        std::cout << "d = " << d << std::endl;
         while (d < 6 * g->step){
             const vec3 b = r.p + r.u * d;
-            if (g->position_to_block(b) != 0 ){
-                g->delete_block(b);
-                std::cout << "b = " << b << std::endl;
+            int box = g->position_to_block(b);
+            if (box != 0 ){
+                if (box != 4)
+                    g->delete_block(b);
                 break;
             }
             d += g->step/2.0f;
@@ -147,7 +141,15 @@ void Player::updatePosition(scene_structure &scene) {
         hierarchy["mov_arm_right"].transform.rotation = R_arm;
         hierarchy["mov_arm_left"].transform.rotation = Symmetry * R_arm;
 
-        if (jumping)
+        if (diving){
+            if (jumping){
+                jump(scale * 0.02f * (400 / (float) (1.3f * fps)));
+                falling = false;
+            }else{
+                fall(scale * 25.30f * (400 / (float) fps));
+            }
+        }
+        else if (jumping)
             jump(scale * 0.12f * (400 / (float) (1.3f * fps)));
         else if (falling)
             fall(scale * 253.0f * (400 / (float) fps));
@@ -172,7 +174,7 @@ void Player::updatePosition(scene_structure &scene) {
         v = vec3{0, 0,0};
     }
 
-    if (!falling){
+    if (!falling && !diving){
         z =  (int) ((p.z-leg_z +g->step/2.0f - error) / g->step);
         p.z = (float) z*g->step + leg_z + g->step/2.0f;
     }
@@ -206,32 +208,41 @@ void Player::move(float speed)
 {
 
     bool up = check_up();
-    bool down = check_down();
-    bool ahead = check_ahead();
-    bool behind = check_behind();
+    bool water = check_water();
+    int down = check_down();
+    int ahead = check_ahead();
+    int behind = check_behind();
+
 
     if (moving_up){
-        if(ahead){
+        if(ahead == 1){
             v.x = 0;
             v.y = 0;
-        }else{
+        }else if (ahead == 0){
             v.x = speed * (float)cos(angle);
             v.y = speed * (float)-sin(angle);
+        }
+        else{
+            v.x = speed/3.0f * (float)cos(angle);
+            v.y = speed/3.0f * (float)-sin(angle);
         }
     }
 
     if (moving_down){
-        if(behind){
+        if(behind == 1){
             v.x = 0;
             v.y = 0;
-        }else{
+        }else if (behind == 0){
             v.x = speed*(float)-cos(angle);
             v.y = speed*(float) sin(angle);
+        }else{
+            v.x = speed/3.0f*(float)-cos(angle);
+            v.y = speed/3.0f*(float) sin(angle);
         }
     }
 
     if (falling){
-        if (down && v.z < 0){
+        if (down != 0 && down != 4 && v.z < 0){
             v.z = 0;
             falling = false;
         }
@@ -241,14 +252,21 @@ void Player::move(float speed)
     }
 
     p = p + v;
-    if (down){
+    if (down != 0 && down != 4){
         z =  (int) ((p.z-leg_z +g->step/2.0f - error) / g->step);
         p.z = (float) z*g->step + leg_z + g->step/2.0f;
     }
 
+    if (down != 4){
+        diving = false;
+    }
 
-    if (!falling && !down){
+    if (!falling && down == 0){
         falling = true;
+    }
+
+    if (down == 4){
+        diving = true;
     }
 
 }
@@ -342,7 +360,7 @@ void Player::create_player()
     hierarchy.add(arm, "arm_left", "mov_arm_left", {-size/2.0f, -arm_y/2.0f, -arm_z});
 }
 
-bool Player::check_ahead()
+int Player::check_ahead()
 {
     //std::cout << "ahead debug" << std::endl;
 
@@ -364,11 +382,18 @@ bool Player::check_ahead()
     vec3 ahead = vec3{ distance * (float) cos(angle), distance * (float)-sin(angle), 0};
     //std::cout << "leg_z = " << leg_z << std::endl;
     //std::cout << g.position_to_block(p1 + ahead) << std::endl;
+    int r;
     bool l = g->position_to_block(p1 + ahead) != 0 || g->position_to_block(p2 + ahead) != 0 || g->position_to_block(p3 + ahead) != 0;
-    return l;
+    if (!l)
+        r = 0;
+    else if (g->position_to_block(p1 + ahead) == 4 || g->position_to_block(p2 + ahead) == 4 || g->position_to_block(p3 + ahead) == 4)
+       r = 2;
+    else
+        r = 1;
+    return r;
 }
 
-bool Player::check_behind()
+int Player::check_behind()
 {
     float d = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
     float teta = atan((size/2.0f)/(body_y/2.0f));
@@ -377,11 +402,18 @@ bool Player::check_behind()
     vec3 p2 = center + vec3{0, 0, 0};
     vec3 p3 = center + vec3{0, 0, dist_head - error};
     vec3 behind = vec3{ distance * (float)-cos(angle), distance * (float)sin(angle), 0};
+    int r;
     bool l = g->position_to_block(p1 + behind) != 0 || g->position_to_block(p2 + behind) != 0 || g->position_to_block(p3 + behind) != 0;
-    return l;
+    if (!l)
+        r = 0;
+    else if (g->position_to_block(p1 + behind) == 4 || g->position_to_block(p2 + behind) == 4 || g->position_to_block(p3 + behind) == 4)
+        r = 2;
+    else
+        r = 1;
+    return r;
 }
 
-bool Player::check_down()
+int Player::check_down()
 {
     //std::cout << "down debug" << std::endl;
     float d = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
@@ -397,8 +429,7 @@ bool Player::check_down()
     //std::cout << "z standing = " << (p1[2] / g.step) << std::endl;
     //std::cout << "leg_z = " << leg_z << std::endl;
     //std::cout << g.position_to_block(p1) << std::endl;
-    bool l = g->position_to_block(p1) != 0;
-    return l;
+    return g->position_to_block(p1);
 }
 
 bool Player::check_up()
@@ -408,6 +439,16 @@ bool Player::check_up()
     vec3 center = p + vec3{d * (float)sin(angle+teta),d*(float)cos(angle+teta), 0 };
     vec3 p1 = center + vec3{0, 0, dist_head + error};
     bool l = g->position_to_block(p1) != 0;
+    return l;
+}
+
+bool Player::check_water()
+{
+    float d = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
+    float teta = atan((size/2.0f)/(body_y/2.0f));
+    vec3 center = p + vec3{d * (float)sin(angle+teta),d*(float)cos(angle+teta), 0 };
+    vec3 p1 = center + vec3{0, 0, 0};
+    bool l = g->position_to_block(p1) == 4;
     return l;
 }
 
@@ -472,8 +513,10 @@ void Player::mouse_click(scene_structure& scene, GLFWwindow* window, int button,
 
         while (d < 6 * g->step){
             const vec3 b = r.p + r.u * d;
-            if (g->position_to_block(b) != 0 ){
-                g->delete_block(b);
+            int box = g->position_to_block(b);
+            if (box != 0 ){
+                if (box != 4)
+                    g->delete_block(b);
                 break;
             }
             d += g->step/2.0f;

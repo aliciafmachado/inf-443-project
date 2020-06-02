@@ -13,7 +13,7 @@ struct gui_scene_structure
     bool generate_river = true;
 
     float se = 0.2f;
-    float height = 0.05f;
+    float height = 0.1f;
     float scaling = 0.5f;
     int octave = 7;
     float persistency = 0.4f;
