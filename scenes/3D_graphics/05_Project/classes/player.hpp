@@ -50,6 +50,7 @@ public:
 
     bool jumping;
     bool falling;
+    bool diving;
 
     bool moving_up = false;
     bool moving_down = false;
@@ -72,13 +73,15 @@ public:
 
     void create_player();
 
-    bool check_ahead();
-    bool check_behind();
-    bool check_down();
+    int check_ahead();
+    int check_behind();
+    int check_down();
     bool check_up();
 
     // Called every time the mouse is clicked
     void mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods);
     // Called every time the mouse is moved
     void mouse_move(scene_structure& scene, GLFWwindow* window);
+
+    bool check_water();
 };

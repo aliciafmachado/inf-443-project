@@ -1,4 +1,4 @@
-/home/iago/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/193.6494.38/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project
+/home/iago/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/201.7223.86/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/iago/Documents/Iago/X/2_Ano/Periodo_3/Graphique3D/inf-443-project
 -- The C compiler identification is GNU 7.5.0
 -- The CXX compiler identification is GNU 7.5.0
 -- Check for working C compiler: /usr/bin/cc
