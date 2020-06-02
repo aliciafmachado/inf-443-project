@@ -1,7 +1,7 @@
 #include "project.hpp"
 
 #ifdef SCENE_3D_PROJECT
-#define KEY 1
+#define KEY 50
 
 // Add vcl namespace within the current one - Allows to use function from vcl library without explicitely preceeding their name with vcl::
 using namespace vcl;

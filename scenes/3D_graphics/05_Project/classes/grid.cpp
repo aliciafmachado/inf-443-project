@@ -11,7 +11,10 @@ using namespace vcl;
 #define WOOD 5
 #define LEAVE 6
 #define SAND 7
-#define WATER_HEIGHT 39
+#define WATER_HEIGHT 40
+#define MIN_WATER 50
+#define QTD_FLOWERS 20
+
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 
@@ -19,8 +22,10 @@ void Grid::setup()
 {
     block = create_block(step / 2, false);
     block_simple = create_block(step / 2, true);
-    block_simple.uniform.shading = {1,0,0};
+    block_simple.uniform.shading = {0.4f, 0.4f, 0.8f};
     block.uniform.shading = {0.4f, 0.4f, 0.8f};
+    billboard = create_billboard(step / 2);
+    billboard.uniform.shading = {0.0f, 0.0f, 1.0f};
 
     block_textures = new GLuint[BLOCK_TYPES];
     block_textures[0] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/grass.png"),
@@ -67,12 +72,9 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
 
     for(int i = 1; i <= BLOCK_TYPES; i++) {
         if(translations[i].size() != 0) {
-            /*if(i == 4 || i == 6) {
-                sort_order(translations[i], scene.camera.translation);
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
-                block.uniform.color_alpha = 0.7;
-            }*/
+            if(i == STONE) {
+                block.uniform.shading = {0.1f, 0.1f, 0.9f};
+            }
             auto vec = translations[i];
             int n = vec.size();
             vec3* v = &vec[0];
@@ -84,13 +86,20 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
                 /*if(wireframe)
                     draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);*/
             }
-            /*if(i == 4 || i == 6) {
-                glDisable(GL_BLEND);
-                block.uniform.color_alpha = 1.0;
-            }*/
+            if(i == STONE) {
+                block.uniform.shading = {0.4f, 0.4f, 0.8f};
+            }
             glBindTexture(GL_TEXTURE_2D, scene.texture_white);
         }
     }
+
+    //print billboards - flowers and possibly water
+    /*int count = 0;
+    while(count < QTD_FLOWERS) {
+        billboard.uniform.transform.rotation = scene.camera.orientation;
+        billboard.uniform.transform.translation = {0.25f,0,-0.5f};
+        if()
+    }*/
     /*if (wireframe)
         draw(block, scene.camera, shaders["wireframe"]);*/
 }
@@ -107,11 +116,11 @@ void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
         for (int j=0; j<Ny; ++j){
             for (int i=0; i<Nx; ++i){
                 if (k <= Nz_dungeon)
-                    blocks[k][j][i] = 3;
+                    blocks[k][j][i] = STONE;
                 if (k > Nz_dungeon && k < Nz_surface)
-                    blocks[k][j][i] = 2;
+                    blocks[k][j][i] = DIRTY;
                 if (k == Nz_surface)
-                    blocks[k][j][i] = 1;
+                    blocks[k][j][i] = GRASS;
                 if (i == 0 || j == 0 || k == 0) {
                     draw_blocks[k][j][i] = true;
                 }
@@ -126,7 +135,10 @@ void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
     if( gui.generate_dungeons )
         generate_dungeons(gui);
     if( gui.generate_river )
-        generate_river(gui);
+        generate_lake(gui);
+    
+    create_enter_dungeon(gui);
+
     if( gui.generate_trees )
         generate_trees(gui);
 
@@ -134,9 +146,9 @@ void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
     for (int k=1; k<Nz_dungeon-1; ++k) {
         for (int j = 1; j < Ny-1; ++j) {
             for (int i = 1; i < Nx-1; ++i) {
-                if (blocks[k+1][j][i] == 0 || blocks[k-1][j][i] == 0 ||
-                    blocks[k][j+1][i] == 0 || blocks[k][j-1][i] == 0 ||
-                    blocks[k][j][i+1] == 0 || blocks[k][j][i-1] == 0){}
+                if (blocks[k+1][j][i] == NONE || blocks[k-1][j][i] == NONE ||
+                    blocks[k][j+1][i] == NONE || blocks[k][j-1][i] == NONE ||
+                    blocks[k][j][i+1] == NONE || blocks[k][j][i-1] == NONE){}
                 else {
                     draw_blocks[k][j][i] = false;
                 }
@@ -191,17 +203,17 @@ void Grid::generate_surface(gui_scene_structure gui)
 
             if (num_blocks > 0){
                 for (size_t kz=1; kz < num_blocks; ++ kz){
-                    blocks[kz + Nz_surface][kv][ku] = 2;
+                    blocks[kz + Nz_surface][kv][ku] = DIRTY;
                     draw_blocks[kz + Nz_surface][kv][ku] = true;
                 }
                 surface_z[kv][ku] = block_z;
             }else{
                 for (int kz=0; kz > num_blocks; -- kz){
-                    blocks[kz + Nz_surface][kv][ku] = 0;
+                    blocks[kz + Nz_surface][kv][ku] = NONE;
                     draw_blocks[kz + Nz_surface][kv][ku] = false;
                 }
                 for (int kz=1; kz < 4; ++ kz){
-                    blocks[-kz + block_z][kv][ku] = 2;
+                    blocks[-kz + block_z][kv][ku] = DIRTY;
                     draw_blocks[-kz + block_z][kv][ku] = true;
                 }
                 surface_z[kv][ku] = block_z;
@@ -216,11 +228,11 @@ void Grid::generate_surface(gui_scene_structure gui)
 
 void Grid::generate_dungeons(gui_scene_structure gui)
 {
-
-    float scaling = gui.scaling;
-    int octave = gui.octave;
-    float persistency = gui.persistency;
-    float frequency_gain = gui.frequency;
+    float min_noise = 0.65f;
+    float scaling = 1.0f;
+    int octave = 7;
+    float persistency = 0.4f;
+    float frequency_gain = 2.0f;
     int show_blocks = 0;
 
     for (int k=1; k<Nz_dungeon; ++k){
@@ -233,25 +245,64 @@ void Grid::generate_dungeons(gui_scene_structure gui)
 
                 const float p = perlin(scaling*u, scaling*v, w, octave, persistency, frequency_gain);
 
-                if (p > gui.min_noise){
+                if (p > min_noise){
                     show_blocks += 1;
                     draw_blocks[k][j][i] = true;
-                    blocks[k][j][i] = 3;
+                    blocks[k][j][i] = STONE;
                 }
                 else{
                     draw_blocks[k][j][i] = false;
-                    blocks[k][j][i] = 0;
+                    blocks[k][j][i] = NONE;
                 }
             }
         }
     }
 }
 
+void Grid::create_enter_dungeon(gui_scene_structure gui) {
+    bool created = false;
+    std::uniform_int_distribution<int> distrib_x(5, (int) Nx-5);
+    std::uniform_int_distribution<int> distrib_y(5, (int) Ny-5);
+    std::uniform_real_distribution<float> take_block(0.0, 1.0);
+    int p_x, p_y, p_z;
+    p_x = distrib_x(gen);
+    p_y = distrib_y(gen);
+    p_z = surface_z[p_y][p_x];
+    while(!created) {
+        if(!near_block(p_x, p_y, p_z + 1, WATER, 5, true) && blocks[p_z+1][p_y][p_x] == 0) {
+            do {
+                p_z--;
+                for(int i = -4; i <= 4; i++) {
+                    for(int j = -4; j <= 4; j++) {
+                        float value;
+                        if(blocks[p_z+1][p_y][p_x] == GRASS)
+                            value = 1.0;
+                        else {
+                            value = 1.0 - ((float)(i * i + j * j))/16;
+                        }
+                        if(take_block(gen) < value) {
+                            draw_blocks[p_z+1][p_y+j][p_x+i] = false;
+                            blocks[p_z+1][p_y+j][p_x+i] = NONE;
+                        }
+                    }
+                }
+            } while(blocks[p_z][p_y][p_x] != STONE);
+            created = true;
+            break;
+        }
+        p_x = distrib_x(gen);
+        p_y = distrib_y(gen);
+        p_z = surface_z[p_y][p_x];
+    }
+
+    std::cout << p_x << std::endl;
+    std::cout << p_y << std::endl;
+}
+
 // Generate trees
 void Grid::generate_trees(gui_scene_structure gui)
 {
     int num_trees = gui.trees;
-    int type_tree = 0; // TODO
 
     std::uniform_int_distribution<int> distrib_x(3, (int) Nx-4);
     std::uniform_int_distribution<int> distrib_y(3, (int) Ny-4);
@@ -316,7 +367,7 @@ void Grid::generate_trees(gui_scene_structure gui)
     } 
 }
 
-void Grid::generate_river(gui_scene_structure gui)
+void Grid::generate_lake(gui_scene_structure gui)
 {
     int count = 0;
     int initialize = 0;
@@ -325,7 +376,7 @@ void Grid::generate_river(gui_scene_structure gui)
             if(surface_z[y][x] < WATER_HEIGHT) {
                 initialize++;
                 for(int h = WATER_HEIGHT; h > surface_z[y][x]; h--) {
-                    if(initialize < 100 || near_block(x, y, h, WATER, 1, false)) {
+                    if(initialize < MIN_WATER || near_block(x, y, h, WATER, 1, false)) {
                         count++;
                         draw_blocks[h][y][x] = true;
                         blocks[h][y][x] = 4;

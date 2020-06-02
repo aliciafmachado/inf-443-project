@@ -22,7 +22,7 @@ struct gui_scene_structure
 
     int num_monsters = 1;
 
-    int trees = 400;
+    int trees = 200;
 };
 
 
