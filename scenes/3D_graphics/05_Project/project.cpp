@@ -1,7 +1,6 @@
 #include "project.hpp"
 
 #ifdef SCENE_3D_PROJECT
-#define KEY 50
 
 // Add vcl namespace within the current one - Allows to use function from vcl library without explicitely preceeding their name with vcl::
 using namespace vcl;
@@ -11,9 +10,9 @@ mesh_drawable update_block(mesh_drawable block, float height);
 
 /** This function is called before the beginning of the animation loop
     It is used to initialize all part-specific data */
-void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui)
+void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_structure& scene, gui_structure& gui, int key)
 {
-    std::default_random_engine gen(KEY);
+    std::default_random_engine gen(key);
     g.setup();
     g.create_grid(gui_scene, gen);
 
