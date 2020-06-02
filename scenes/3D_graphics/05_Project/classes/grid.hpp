@@ -15,7 +15,7 @@ public:
     size_t Ny = 180; // Number of blocks in y
     size_t Nz = 300; // Number of blocks in z
     size_t Nz_dungeon = 30; // Number of blocks in z
-    int Nz_surface = 32; // Number of blocks in z
+    int Nz_surface = 31; // Number of blocks in z
     float step = 1 / (float) Nx; // Minimum step (Divide by the biggest N)
 
     size_t N; // Number of blocks N x N x N
@@ -35,10 +35,12 @@ public:
     void generate_dungeons(gui_scene_structure gui);
     void generate_trees(gui_scene_structure gui);
     void generate_river(gui_scene_structure gui);
+    void generate_flowers(gui_scene_structure gui);
     void feed_translations();
+    bool near_block(float x, float y, float z, int block_type, int dist, bool only_surface);
 
     vcl::mesh_drawable block;
-    vcl::mesh_drawable block_billboard;
+    vcl::mesh_drawable block_simple;
 
     GLuint* block_textures;
 

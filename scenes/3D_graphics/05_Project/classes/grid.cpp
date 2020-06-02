@@ -2,7 +2,7 @@
 
 using namespace vcl;
 
-#define BLOCK_TYPES 6
+#define BLOCK_TYPES 7
 #define NONE 0
 #define GRASS 1
 #define DIRTY 2
@@ -10,15 +10,16 @@ using namespace vcl;
 #define WATER 4
 #define WOOD 5
 #define LEAVE 6
-#define WATER_HEIGHT 48
+#define SAND 7
+#define WATER_HEIGHT 35
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 
 void Grid::setup()
 {
     block = create_block(step / 2, false);
-    block_billboard = create_block(step / 2, true);
-    block_billboard.uniform.shading = {1,0,0};
+    block_simple = create_block(step / 2, true);
+    block_simple.uniform.shading = {1,0,0};
 
     block_textures = new GLuint[BLOCK_TYPES];
     block_textures[0] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/grass.png"),
@@ -33,6 +34,8 @@ void Grid::setup()
                                              GL_REPEAT, GL_REPEAT );
     block_textures[5] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/leave.png"),
                                              GL_REPEAT, GL_REPEAT );
+    block_textures[6] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/sand.png"),
+                                             GL_REPEAT, GL_REPEAT );
 }
 
 void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe, int fps) {
@@ -41,12 +44,26 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
 
     for(int i = 1; i <= BLOCK_TYPES; i++) {
         if(translations[i].size() != 0) {
+            /*if(i == 4 || i == 6) {
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+                block.uniform.color_alpha = 0.7;
+            }*/
             auto vec = translations[i];
             int n = vec.size();
             vec3* v = &vec[0];
-            draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);
-            /*if(wireframe)
-                draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);*/
+            if(i == 7) {
+                draw_instanced(block_simple, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);
+            }
+            else {
+                draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);
+                /*if(wireframe)
+                    draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);*/
+            }
+            /*if(i == 4 || i == 6) {
+                glDisable(GL_BLEND);
+                block.uniform.color_alpha = 1.0;
+            }*/
             glBindTexture(GL_TEXTURE_2D, scene.texture_white);
         }
     }
@@ -143,8 +160,6 @@ void Grid::generate_surface(gui_scene_structure gui)
 
             const int num_blocks = z / step;
 
-            std::cout << ku << std::endl;
-
             const int block_z = Nz_surface + num_blocks;
             blocks[block_z][kv][ku] = 1;
             surface_z[kv][ku] = block_z;
@@ -166,6 +181,9 @@ void Grid::generate_surface(gui_scene_structure gui)
                     draw_blocks[-kz + block_z][kv][ku] = true;
                 }
                 surface_z[kv][ku] = block_z;
+            }
+            if(surface_z[kv][ku] > Nz_surface) {
+                blocks[Nz_surface][kv][ku] = DIRTY;
             }
         }
     }
@@ -233,7 +251,7 @@ void Grid::generate_trees(gui_scene_structure gui)
         p_z = surface_z[p_y][p_x];
 
         // First, we see if the condition to draw a tree is satisfied
-        if(blocks[p_z][p_y][p_x] == 1 and blocks[p_z+1][p_y][p_x] == 0) {
+        if(blocks[p_z][p_y][p_x] == 1 && !near_block(p_x, p_y, p_z + 1, WOOD, 2, true) && blocks[p_z+1][p_y][p_x] == 0) {
             
             int s = size(gen);
             for (int t=1; t<=s; t++){
@@ -276,16 +294,62 @@ void Grid::generate_trees(gui_scene_structure gui)
 
 void Grid::generate_river(gui_scene_structure gui)
 {
+    int count = 0;
+    int initialize = 0;
     for(int x = 0; x < Nx; x++) {
         for(int y = 0; y < Ny; y++) {
             if(surface_z[y][x] < WATER_HEIGHT) {
+                initialize++;
                 for(int h = WATER_HEIGHT; h > surface_z[y][x]; h--) {
-                    draw_blocks[h][y][x] = true;
-                    blocks[h][y][x] = 4;
+                    if(initialize < 100 || near_block(x, y, h, WATER, 1, false)) {
+                        count++;
+                        std::cout <<count << std::endl;
+                        draw_blocks[h][y][x] = true;
+                        blocks[h][y][x] = 4;
+                        int numbers[3] = {h,y,x};
+                        // transform near blocks in sand
+                        int sand = 2;
+
+                        for(int incx = -sand; incx <= sand; incx ++) {
+                            for(int incy = -sand; incy <= sand; incy ++) {
+                                for(int incz = -sand; incz <= sand; incz++) {
+                                    if(h + incz < Nz && h + incz > 0 && y + incy < Ny &&
+                                    y + incy > 0 && x + incx < Nx && x + incx > 0)
+                                        if(blocks[h + incz][y + incy][x + incx] == GRASS) {
+                                            blocks[h + incz][y + incy][x + incx] = SAND;
+                                        }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+bool Grid::near_block(float x, float y, float z, int block_type, int dist, bool only_surface) {
+    bool near = false;
+    int height_min = -dist;
+    if(only_surface)
+        height_min = 0;
+    for(int incx = -dist; incx <= dist; incx ++) {
+        for(int incy = -dist; incy <= dist; incy ++) {
+            for(int incz = height_min; incz <= dist; incz++) {
+                if(z + incz < Nz && z + incz > 0 && y + incy < Ny &&
+                y + incy > 0 && x + incx < Nx && x + incx > 0)
+                    if(blocks[z + incz][y + incy][x + incx] == block_type) {
+                        near = true;
+                        break;
+                    }
+            }
+        }
+    }
+    return near;
+}
+
+void Grid::generate_flowers(gui_scene_structure gui) {
+    // TODO
 }
 
 int Grid::position_to_block(vec3 p)

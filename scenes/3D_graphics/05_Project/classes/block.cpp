@@ -42,7 +42,7 @@ mesh create_block(float l, bool billboard) {
     }
 
     else {
-        const float e = 1e-3f;
+        const float e = 1e-2f;
         const float u0 = 0.0f;
         const float u1 = 0.25f+e;
         const float u2 = 0.5f-e;
