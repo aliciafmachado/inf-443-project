@@ -2,7 +2,7 @@
 
 using namespace vcl;
 
-mesh create_block(float l, bool billboard) {
+mesh create_block(float l, bool simple) {
 
     mesh block;
 
@@ -30,7 +30,7 @@ mesh create_block(float l, bool billboard) {
             {23,22,21}, {23,21,20}, {13,12,14}, {13,14,15}
     };
 
-    if(billboard) {
+    if(simple) {
         block.texture_uv = {
             {0,1}, {1,1}, {1,0}, {0,0},
             {0,1}, {1,1}, {1,0}, {0,0},
@@ -63,4 +63,13 @@ mesh create_block(float l, bool billboard) {
     }
 
     return block;
+}
+
+mesh create_billboard(float l) {
+    mesh billb;
+    billb.position = {{-0.2f,0,0}, { 0.2f,0,0}, { 0.2f, 0.4f,0}, {-0.2f, 0.4f,0}};
+    billb.texture_uv   = {{0,1}, {1,1}, {1,0}, {0,0}};
+    billb.connectivity = {{0,1,2}, {0,2,3}};
+
+    return billb;
 }

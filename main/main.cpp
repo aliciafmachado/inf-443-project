@@ -41,9 +41,20 @@ void keyboard_input_callback(GLFWwindow* window, int key, int scancode, int acti
 // Start program
 // ************************************** //
 
-int main()
+int main(int argc, char** argv)
 {
+    int key;
+    if(argc == 1) {
+        std::cout << "No argument passed!" << std::endl;
+        std::cout << "Choosing random key . . ." << std::endl;
+        key = time(NULL);
+        std::cout << "The chosen key was " << key << std::endl;
+    }
 
+    else {
+        key = std::stoi(argv[1]);
+        std::cout << "You passed the key " << key << std::endl;
+    }
 
     // ************************************** //
     // Initialization and data setup
@@ -65,7 +76,7 @@ int main()
 
     opengl_debug();
     std::cout<<"*** Setup Data ***"<<std::endl;
-    scene_current.setup_data(shaders, scene, gui);
+    scene_current.setup_data(shaders, scene, gui, key);
     std::cout<<"\t [OK] Data setup"<<std::endl;
     opengl_debug();
 

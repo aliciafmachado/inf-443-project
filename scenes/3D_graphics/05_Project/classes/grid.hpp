@@ -25,9 +25,6 @@ public:
     std::vector<std::vector<std::vector<bool>>> draw_blocks; // 3D array
     std::vector<std::vector<int>> surface_z; // 3D array
     std::map<int,std::vector<vcl::vec3>> translations;
-
-    // chunks -> here for futher optimisation
-    // std::vector<std::map<vcl::vec3, std::vector<int>>> chunks;
     
     // Seeding:
     std::default_random_engine gen;
@@ -36,13 +33,15 @@ public:
     void generate_surface(gui_scene_structure gui);
     void generate_dungeons(gui_scene_structure gui);
     void generate_trees(gui_scene_structure gui);
-    void generate_river(gui_scene_structure gui);
+    void generate_lake(gui_scene_structure gui);
     void generate_flowers(gui_scene_structure gui);
+    void create_enter_dungeon(gui_scene_structure gui);
     void feed_translations();
     bool near_block(float x, float y, float z, int block_type, int dist, bool only_surface);
 
     vcl::mesh_drawable block;
     vcl::mesh_drawable block_simple;
+    vcl::mesh_drawable billboard;
 
     GLuint* block_textures;
 
