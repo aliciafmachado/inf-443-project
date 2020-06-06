@@ -272,14 +272,18 @@ void Monster::create_monster()
 {
 
     // draw body
-    mesh head = mesh_primitive_parallelepiped({0,0,0},{head_x,0,0},
+    mesh_drawable head = mesh_primitive_parallelepiped({0,0,0},{head_x,0,0},
                                               {0,head_y,0},{0,0,head_z});
-    mesh body = mesh_primitive_parallelepiped({0,0,0},{body_x,0,0},
+    mesh_drawable body = mesh_primitive_parallelepiped({0,0,0},{body_x,0,0},
                                               {0,body_y,0},{0,0,body_z});
-    mesh leg = mesh_primitive_parallelepiped({0,0,0},{leg_x,0,0},
+    mesh_drawable leg = mesh_primitive_parallelepiped({0,0,0},{leg_x,0,0},
                                              {0,leg_y,0},{0,0,leg_z});
-    mesh mov = mesh_primitive_sphere(scale * 0.01f);
+    mesh_drawable mov = mesh_primitive_sphere(scale * 0.01f);
 
+    head.uniform.shading = {0.4f, 0.4f, 0.8f};
+    body.uniform.shading = {0.4f, 0.4f, 0.8f};
+    leg.uniform.shading = {0.4f, 0.4f, 0.8f};
+    mov.uniform.shading = {0.4f, 0.4f, 0.8f};
 
     // Add texture
     const float x_a = 1.0f/8.0f;
