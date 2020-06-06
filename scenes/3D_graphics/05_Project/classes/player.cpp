@@ -285,21 +285,15 @@ void Player::create_player()
 {
 
     // draw body
-    mesh_drawable head = mesh_primitive_parallelepiped({0,0,0},{head_x,0,0},
+    mesh head = mesh_primitive_parallelepiped({0,0,0},{head_x,0,0},
                                               {0,head_y,0},{0,0,head_z});
-    mesh_drawable body = mesh_primitive_parallelepiped({0,0,0},{size,0,0},
+    mesh body = mesh_primitive_parallelepiped({0,0,0},{size,0,0},
                                               {0,body_y,0},{0,0,body_z});
-    mesh_drawable leg = mesh_primitive_parallelepiped({0,0,0},{size,0,0},
+    mesh leg = mesh_primitive_parallelepiped({0,0,0},{size,0,0},
                                              {0,leg_y,0},{0,0,leg_z});
-    mesh_drawable arm = mesh_primitive_parallelepiped({0,0,0},{size,0,0},
+    mesh arm = mesh_primitive_parallelepiped({0,0,0},{size,0,0},
                                              {0,arm_y,0},{0,0,arm_z});
-    mesh_drawable mov = mesh_primitive_sphere(scale * 0.01f);
-
-    head.uniform.shading = {0.4f, 0.4f, 0.8f};
-    body.uniform.shading = {0.4f, 0.4f, 0.8f};
-    leg.uniform.shading = {0.4f, 0.4f, 0.8f};
-    mov.uniform.shading = {0.4f, 0.4f, 0.8f};
-    arm.uniform.shading = {0.4f, 0.4f, 0.8f};
+    mesh mov = mesh_primitive_sphere(scale * 0.01f);
 
     // Add texture
     const float x_a = 0.5f/4.0f;
@@ -349,21 +343,33 @@ void Player::create_player()
     };
 
 
-    hierarchy.add(body, "body");
+    mesh_drawable head_d = head;
+    mesh_drawable body_d = body;
+    mesh_drawable leg_d = leg;
+    mesh_drawable mov_d = mov;
+    mesh_drawable arm_d = arm;
 
-    hierarchy.add(mov, "mov_head", "body", {head_x/2.0f,head_y/2.0f,body_z});
-    hierarchy.add(mov, "mov_leg_right", "body", {size/2.0f,body_y-leg_y/2.0f,0});
-    hierarchy.add(mov, "mov_leg_left", "body", {size/2.0f,body_y/2.0f-leg_y/2.0f,0});
-    hierarchy.add(mov, "mov_arm_right", "body", {size/2.0f,-arm_y/2.0f,body_z});
-    hierarchy.add(mov, "mov_arm_left", "body", {size/2.0f,body_y + arm_y/2.0f,body_z});
+    head_d.uniform.shading = {0.4f, 0.3f, 0.1f};
+    body_d.uniform.shading = {0.4f, 0.3f, 0.1f};
+    leg_d.uniform.shading = {0.4f, 0.3f, 0.1f};
+    mov_d.uniform.shading = {0.4f, 0.3f, 0.1f};
+    arm_d.uniform.shading = {0.4f, 0.3f, 0.1f};
 
-    hierarchy.add(head, "head", "mov_head", {-head_x/2.0f-size/4.0f,-head_y/2.0f, 0});
+    hierarchy.add(body_d, "body");
 
-    hierarchy.add(leg, "leg_right", "mov_leg_right", {-size/2.0f, -leg_y/2.0f, -leg_z});
-    hierarchy.add(leg, "leg_left", "mov_leg_left", {-size/2.0f, -leg_y/2.0f, -leg_z});
+    hierarchy.add(mov_d, "mov_head", "body", {head_x/2.0f,head_y/2.0f,body_z});
+    hierarchy.add(mov_d, "mov_leg_right", "body", {size/2.0f,body_y-leg_y/2.0f,0});
+    hierarchy.add(mov_d, "mov_leg_left", "body", {size/2.0f,body_y/2.0f-leg_y/2.0f,0});
+    hierarchy.add(mov_d, "mov_arm_right", "body", {size/2.0f,-arm_y/2.0f,body_z});
+    hierarchy.add(mov_d, "mov_arm_left", "body", {size/2.0f,body_y + arm_y/2.0f,body_z});
 
-    hierarchy.add(arm, "arm_right", "mov_arm_right", {-size/2.0f, -arm_y/2.0f, -arm_z});
-    hierarchy.add(arm, "arm_left", "mov_arm_left", {-size/2.0f, -arm_y/2.0f, -arm_z});
+    hierarchy.add(head_d, "head", "mov_head", {-head_x/2.0f-size/4.0f,-head_y/2.0f, 0});
+
+    hierarchy.add(leg_d, "leg_right", "mov_leg_right", {-size/2.0f, -leg_y/2.0f, -leg_z});
+    hierarchy.add(leg_d, "leg_left", "mov_leg_left", {-size/2.0f, -leg_y/2.0f, -leg_z});
+
+    hierarchy.add(arm_d, "arm_right", "mov_arm_right", {-size/2.0f, -arm_y/2.0f, -arm_z});
+    hierarchy.add(arm_d, "arm_left", "mov_arm_left", {-size/2.0f, -arm_y/2.0f, -arm_z});
 }
 
 int Player::check_ahead()

@@ -41,7 +41,7 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
     glEnable( GL_POLYGON_OFFSET_FILL ); // avoids z-fighting when displaying wireframe
     skybox.frame_draw(shaders, scene, gui_scene.wireframe, fps);
     g.frame_draw(shaders, scene, gui_scene.wireframe, fps);
-    player.frame_draw(shaders, scene, gui_scene, fps);
+    //player.frame_draw(shaders, scene, gui_scene, fps);
     m1.frame_draw(shaders, scene, gui_scene, fps);
    // m2.frame_draw(shaders, scene, gui_scene, fps);
     //m3.frame_draw(shaders, scene, gui_scene, fps);

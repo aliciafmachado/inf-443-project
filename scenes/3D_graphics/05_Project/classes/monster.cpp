@@ -41,7 +41,12 @@ void Monster::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g
     y = start_y(generator);
     z = g->surface_z[y][x];
     while (!find_start_place){
-        if (g->blocks[z][y][x] == 0 && g->blocks[z+1][y][x] == 0 && g->blocks[z+2][y][x] == 0 && g->blocks[z+3][y][x] == 0 && g->blocks[z+4][y][x] == 0)
+        if ( x > g->Nx - 6 || y > g->Ny - 6 || x < 6 || (int) y < 6){
+            x = start_x(generator);
+            y = start_y(generator);
+            z = g->surface_z[y][x];
+        }
+        else if (g->blocks[z][y][x] == 0 && g->blocks[z+1][y][x] == 0 && g->blocks[z+2][y][x] == 0 && g->blocks[z+3][y][x] == 0 && g->blocks[z+4][y][x] == 0)
             find_start_place = true;
         else
             z += 1;
@@ -194,7 +199,7 @@ void Monster::updatePosition(scene_structure &scene) {
     mat3 const R_head = rotation_from_axis_angle_mat3({0, 0, 1}, 0.8f * std::sin(3 * 3.14f * (t - 0.6f)));
     hierarchy["mov_head"].transform.rotation = R_head;
     hierarchy["body"].transform.translation = p;
-    //scene.camera.translation = -p;
+    scene.camera.translation = -p;
 
 }
 
@@ -272,18 +277,13 @@ void Monster::create_monster()
 {
 
     // draw body
-    mesh_drawable head = mesh_primitive_parallelepiped({0,0,0},{head_x,0,0},
+    mesh head = mesh_primitive_parallelepiped({0,0,0},{head_x,0,0},
                                               {0,head_y,0},{0,0,head_z});
-    mesh_drawable body = mesh_primitive_parallelepiped({0,0,0},{body_x,0,0},
+    mesh body = mesh_primitive_parallelepiped({0,0,0},{body_x,0,0},
                                               {0,body_y,0},{0,0,body_z});
-    mesh_drawable leg = mesh_primitive_parallelepiped({0,0,0},{leg_x,0,0},
+    mesh leg = mesh_primitive_parallelepiped({0,0,0},{leg_x,0,0},
                                              {0,leg_y,0},{0,0,leg_z});
-    mesh_drawable mov = mesh_primitive_sphere(scale * 0.01f);
-
-    head.uniform.shading = {0.4f, 0.4f, 0.8f};
-    body.uniform.shading = {0.4f, 0.4f, 0.8f};
-    leg.uniform.shading = {0.4f, 0.4f, 0.8f};
-    mov.uniform.shading = {0.4f, 0.4f, 0.8f};
+    mesh mov = mesh_primitive_sphere(scale * 0.01f);
 
     // Add texture
     const float x_a = 1.0f/8.0f;
@@ -324,13 +324,23 @@ void Monster::create_monster()
             {1*x_b,2*y_a+y_b}, {1*x_b,2*y_a}, {1*x_a,2*y_a}, {1*x_a,2*y_a+y_b},
     };
 
-    hierarchy.add(body, "body");
-    hierarchy.add(mov, "mov_head", "body", {body_x/2.0f,body_y/2.0f,body_z});
+    mesh_drawable head_d = head;
+    mesh_drawable body_d = body;
+    mesh_drawable leg_d = leg;
+    mesh_drawable mov_d = mov;
 
-    hierarchy.add(head, "head", "mov_head", {-head_x/2.0f,-head_y/2.0f, 0});
+    head_d.uniform.shading = {0.4f, 0.3f, 0.1f};
+    body_d.uniform.shading = {0.4f, 0.3f, 0.1f};
+    leg_d.uniform.shading = {0.4f, 0.3f, 0.1f};
+    mov_d.uniform.shading = {0.4f, 0.3f, 0.1f};
 
-    hierarchy.add(leg, "leg_front", "body", {body_x, 0, -leg_z});
-    hierarchy.add(leg, "leg_behind", "body", {-leg_x, 0, -leg_z});
+    hierarchy.add(body_d, "body");
+    hierarchy.add(mov_d, "mov_head", "body", {body_x/2.0f,body_y/2.0f,body_z});
+
+    hierarchy.add(head_d, "head", "mov_head", {-head_x/2.0f,-head_y/2.0f, 0});
+
+    hierarchy.add(leg_d, "leg_front", "body", {body_x, 0, -leg_z});
+    hierarchy.add(leg_d, "leg_behind", "body", {-leg_x, 0, -leg_z});
 
 }
 
