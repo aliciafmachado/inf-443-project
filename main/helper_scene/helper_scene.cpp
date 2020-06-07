@@ -9,8 +9,8 @@ GLFWwindow* create_window(const std::string& window_title)
 {
     const int opengl_version_major = 3;
     const int opengl_version_minor = 3;
-    const int window_width  = 1280;
-    const int window_height = 1000;
+    const int window_width  = 1920;
+    const int window_height = 1080;
 
     GLFWwindow* window = vcl::glfw_create_window(window_width, window_height, window_title, opengl_version_major, opengl_version_minor);
     return window;

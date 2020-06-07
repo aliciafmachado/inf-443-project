@@ -51,7 +51,7 @@ void Monster::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g
         else
             z += 1;
     }
-
+    //std::cout << "x = " << x << ", y = " << y << std::endl;
     p = g->blocks_to_position(x, y, z) + vec3{0, 0, dist_feet};
 
     angle = 0;
@@ -93,7 +93,6 @@ void Monster::frame_draw(std::map<std::string, GLuint> &shaders, scene_structure
 }
 
 void Monster::updatePosition(scene_structure &scene) {
-
     const float t = timer.t;
     c_t += t;
     float speed = g->step / (3*27.0f) * (400 / (float) fps);
@@ -103,6 +102,13 @@ void Monster::updatePosition(scene_structure &scene) {
     std::uniform_real_distribution<float> at_r(M_PI/4.0f, M_PI/2.0f);
     std::uniform_int_distribution<int> s(0, 1);
     std::uniform_real_distribution<float> mt(250.0f * ((float)fps/400.0f), 500.0f * ((float)fps/400.0f));
+    /*
+    std::cout << "falling = " << falling << std::endl;
+    std::cout << "jumping = " << jumping << std::endl;
+    std::cout << "turning = " << turning << std::endl;
+    std::cout << "moving = " << moving << std::endl;
+    std::cout << "find_player = " << find_player << std::endl;
+    */
 
     if (!jumping && !falling)
         close_player();
@@ -113,10 +119,16 @@ void Monster::updatePosition(scene_structure &scene) {
             (int) (p.x / g->step) < 6 || (int) (p.y / g->step) < 6) {
             turning = false;
             moving = true;
-            if (angle_turn < 0)
-                angle -= M_PI;
-            else
-                angle += M_PI;
+            if (out){
+                if (angle_turn < 0)
+                    angle -= M_PI;
+                else
+                    angle += M_PI;
+                out = false;
+            }
+        }
+        else{
+            out = true;
         }
     }
     if (!find_player && !falling && !jumping){
@@ -142,7 +154,6 @@ void Monster::updatePosition(scene_structure &scene) {
                 t_mov = mt(generator);
                 f_t_mov = c_t + t_mov;
                 hierarchy["body"].transform.rotation = rotation_from_axis_angle_mat3({0,0,-1}, angle);
-               // hierarchy["mov_head"].transform.rotation = rotation_from_axis_angle_mat3({0,0,-1}, angle);
                 l_angle = angle;
 
             }
@@ -171,9 +182,9 @@ void Monster::updatePosition(scene_structure &scene) {
         else if (a <= 0 && b <= 0)
             angle = 3*M_PI/2.0f + std::atan(std::abs(a/b));
         if (jumping)
-            jump(scale * 0.04f * (400 / (float) fps));
+            jump(scale * (float) fps  * (-0.000183f*(float)fps+0.039301f) /(10.0f));
         else if (falling)
-            fall(scale * 8500.0f * (400 / (float) fps));
+            fall(scale * (float) fps * (173040.0411f*(float)pow((double)fps, (double)-1.8751f)));
         move(speed, scene);
         hierarchy["body"].transform.rotation = rotation_from_axis_angle_mat3({0,0,-1}, angle);
     }
@@ -181,9 +192,11 @@ void Monster::updatePosition(scene_structure &scene) {
     if (!find_player){
         if (moving) {
             if (jumping)
-                jump(scale * (float) fps  * (-0.000183f*(float)fps+0.039301f) / (3.61f));
+                jump(scale * (float) fps  * (-0.000183f*(float)fps+0.039301f) /(10.0f));
             else if (falling)
-                fall(scale * (float) fps * (173040.0411f*(float)pow((double)fps, (double)-1.8751f))/ (3.61f));
+                fall(scale * (float) fps * (173040.0411f*(float)pow((double)fps, (double)-1.8751f)));
+            move(speed, scene);
+            hierarchy["body"].transform.rotation = rotation_from_axis_angle_mat3({0,0,-1}, angle);
         }
         else if (turning){
             turn(speed_turn);
@@ -199,7 +212,7 @@ void Monster::updatePosition(scene_structure &scene) {
     mat3 const R_head = rotation_from_axis_angle_mat3({0, 0, 1}, 0.8f * std::sin(3 * 3.14f * (t - 0.6f)));
     hierarchy["mov_head"].transform.rotation = R_head;
     hierarchy["body"].transform.translation = p;
-    scene.camera.translation = -p;
+    //scene.camera.translation = -p;
 
 }
 

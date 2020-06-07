@@ -54,6 +54,7 @@ public:
 
     bool moving;
     bool turning;
+    bool out;
 
     float angle_turn;
     float f_angle;

@@ -19,17 +19,20 @@ void scene_model::setup_data(std::map<std::string,GLuint>& shaders, scene_struct
     skybox.setup();
     player.setup(g.step/1.9f, shaders, &g, &gui_scene);
     m1.setup(g.step*1.9f, shaders, &g, &player);
-    //m2.setup(g.step*1.9f, shaders, &g, &player);
+    m2.setup(g.step*1.9f, shaders, &g, &player);
     //m3.setup(g.step*1.9f, shaders, &g, &player);
 
     // Setup initial camera mode and position
     scene.camera.camera_type = camera_control_spherical_coordinates;
-    scene.camera.scale = 0.015f;
+
     float dc = sqrt(player.size * player.size / 4.0f + player.body_y * player.body_y / 4.0f);
     float teta = atan((player.size/2.0f)/(player.body_y/2.0f));
     vec3 center = vec3{dc * (float)sin(player.angle+teta),dc*(float)cos(player.angle+teta), 0 };
     scene.camera.translation = -player.hierarchy["body"].transform.translation - center;
     scene.camera.apply_rotation(-M_PI/2.0f,0,0, M_PI/2.0f);
+    scene.camera.scale = 0.015;
+    //scene.camera.orientation = mat3{-0.995362 0.023414 -0.093311 -0.096204 -0.242255 0.965431 0.000000 0.969930 0.243384};
+    //scene.camera.scale = 2.18039f;
 }
 
 /** This function is called at each frame of the animation loop.
@@ -41,9 +44,9 @@ void scene_model::frame_draw(std::map<std::string,GLuint>& shaders, scene_struct
     glEnable( GL_POLYGON_OFFSET_FILL ); // avoids z-fighting when displaying wireframe
     skybox.frame_draw(shaders, scene, gui_scene.wireframe, fps);
     g.frame_draw(shaders, scene, gui_scene.wireframe, fps);
-    //player.frame_draw(shaders, scene, gui_scene, fps);
+    player.frame_draw(shaders, scene, gui_scene, fps);
     m1.frame_draw(shaders, scene, gui_scene, fps);
-   // m2.frame_draw(shaders, scene, gui_scene, fps);
+    //m2.frame_draw(shaders, scene, gui_scene, fps);
     //m3.frame_draw(shaders, scene, gui_scene, fps);
 }
 
@@ -62,36 +65,6 @@ void scene_model::set_gui()
     ImGui::Checkbox("Dungeons", &gui_scene.generate_dungeons); ImGui::SameLine();
     ImGui::Checkbox("Trees", &gui_scene.generate_trees);   ImGui::SameLine();
     ImGui::Checkbox("River", &gui_scene.generate_river);   ImGui::SameLine();
-
-    float height_min = 0.02f;
-    float height_max = 0.50f;
-
-    float scaling_min = 0.5f;
-    float scaling_max = 8.0f;
-
-    float persistency_min = 0.01f;
-    float persistency_max = 1.0f;
-
-    float frequency_gain_min = 0.01f;
-    float frequency_gain_max = 5.0f;
-
-    float min_noise_min = 0.3f;
-    float min_noise_max = 0.8f;
-
-    float se_min = 0.1f;
-    float se_max = 5.0f;
-
-    int trees_min = 0;
-    int trees_max = 100;
-
-    ImGui::Spacing();
-
-    ImGui::SliderFloat("Height", &gui_scene.height, height_min, height_max);
-    ImGui::SliderFloat("Scaling", &gui_scene.scaling, scaling_min, scaling_max);
-    ImGui::SliderFloat("Persistency", &gui_scene.persistency, persistency_min, persistency_max);
-    ImGui::SliderFloat("Frequency", &gui_scene.frequency, frequency_gain_min, frequency_gain_max);
-    ImGui::SliderFloat("Min noise", &gui_scene.min_noise, min_noise_min, min_noise_max);
-    ImGui::SliderFloat("Se", &gui_scene.se, se_min, se_max);
 }
 
 void scene_model::keyboard_input(scene_structure& scene, GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -99,7 +72,7 @@ void scene_model::keyboard_input(scene_structure& scene, GLFWwindow* window, int
 }
 
 void scene_model::mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods) {
-    player.mouse_click(scene, window, button, action, mods);
+    //player.mouse_click(scene, window, button, action, mods);
 }
 
 void scene_model::mouse_move(scene_structure& scene, GLFWwindow* window) {

@@ -11,7 +11,7 @@ using namespace vcl;
 #define WOOD 5
 #define LEAVE 6
 #define SAND 7
-#define WATER_HEIGHT 40
+#define WATER_HEIGHT 56
 #define MIN_WATER 50
 #define QTD_FLOWERS 20
 
@@ -19,6 +19,7 @@ float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene)
 
 void Grid::setup()
 {
+    gen.seed(time(NULL));
     block = create_block(step / 2, false);
     block_simple = create_block(step / 2, true);
     block_simple.uniform.shading = {0.4f, 0.4f, 0.8f};
@@ -72,7 +73,7 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
     for(int i = 1; i <= BLOCK_TYPES; i++) {
         if(translations[i].size() != 0) {
             if(i == STONE) {
-                block.uniform.shading = {0.1f, 0.1f, 0.9f};
+                block.uniform.shading = {0.5f, 0.3f, 0.7f};
             }
             auto vec = translations[i];
             int n = vec.size();
@@ -211,7 +212,7 @@ void Grid::generate_surface(gui_scene_structure gui)
                     blocks[kz + Nz_surface][kv][ku] = NONE;
                     draw_blocks[kz + Nz_surface][kv][ku] = false;
                 }
-                for (int kz=1; kz < 4; ++ kz){
+                for (int kz=1; kz < 5; ++ kz){
                     blocks[-kz + block_z][kv][ku] = DIRTY;
                     draw_blocks[-kz + block_z][kv][ku] = true;
                 }
@@ -227,22 +228,31 @@ void Grid::generate_surface(gui_scene_structure gui)
 
 void Grid::generate_dungeons(gui_scene_structure gui)
 {
-    float min_noise = 0.65f;
-    float scaling = 1.0f;
-    int octave = 7;
-    float persistency = 0.4f;
-    float frequency_gain = 2.0f;
+    std::uniform_int_distribution<int> lim_z(2, 4);
+    std::uniform_real_distribution<float> f(1.3f, 3.2f);
+    std::uniform_real_distribution<float> s(0.9f, 3.0f);
+    std::uniform_real_distribution<float> h(25.0f, 35.0f);
+    std::uniform_int_distribution<int> o(3, 5);
+    std::uniform_real_distribution<float> mn(0.5f, 0.7f);
+    std::uniform_real_distribution<float> p(0.3f, 0.45f);
+
+    float min_noise = mn(gen);
+    float scaling = s(gen);
+    int octave =  o(gen);
+    float persistency = p(gen);
+    float frequency_gain = f(gen);
+    float height = h(gen);
     int show_blocks = 0;
 
-    for (int k=1; k<Nz_dungeon; ++k){
-        for (int j=0; j<Ny; ++j){
-            for (int i=0; i<Nx; ++i){
-
+    for (int j=0; j<Ny; ++j){
+        for (int i=0; i<Nx; ++i){
+            const int lim = surface_z[j][i] - lim_z(gen);
+            for (int k=1; k<lim; ++k){
                 const float u = i/(Nx-1.0f);
                 const float v = j/(Ny-1.0f);
-                const float w = k/(Nz_dungeon-1.0f);
+                const float w = k/(Nz-1.0f);
 
-                const float p = perlin(scaling*u, scaling*v, w, octave, persistency, frequency_gain);
+                const float p = perlin(scaling*v, scaling*u, scaling*w*height, octave, persistency, frequency_gain);
 
                 if (p > min_noise){
                     show_blocks += 1;
@@ -294,8 +304,6 @@ void Grid::create_enter_dungeon(gui_scene_structure gui) {
         p_z = surface_z[p_y][p_x];
     }
 
-    std::cout << p_x << std::endl;
-    std::cout << p_y << std::endl;
 }
 
 // Generate trees
@@ -456,6 +464,10 @@ vec3 Grid::blocks_to_position(int x, int y, int z) {
     float w = z * step;
 
     return vec3{u, v, w};
+}
+
+void Grid::join_surface_dungeon() {
+
 }
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui)

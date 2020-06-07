@@ -88,6 +88,15 @@ int main(int argc, char** argv)
 
 
     std::cout<<"*** Start GLFW animation loop ***"<<std::endl;
+    std::cout<<""<<std::endl;
+    std::cout<<"Welcome to Minecraft" <<std::endl;
+    std::cout<<""<<std::endl;
+    std::cout<<"Camera angle movement: Right mouse button or keyboard arrows"<<std::endl;
+    std::cout<<"Player angle movement: Left mouse button or A, D"<<std::endl;
+    std::cout<<"Player movement: W, S"<<std::endl;
+    std::cout<<"Jump: SPACE"<<std::endl;
+    std::cout<<"Break blocks: Get close and press LEFT CONTROL"<<std::endl;
+    std::cout<<""<<std::endl;
     vcl::glfw_fps_counter fps_counter;
     while( !glfwWindowShouldClose(gui.window) )
     {

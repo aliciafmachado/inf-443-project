@@ -47,7 +47,8 @@ void Player::setup(float scale_, std::map<std::string,GLuint>& shaders, Grid* g_
             z += 1;
     }
     p = g->blocks_to_position(x, y, z) + vec3{0, 0, dist_feet};
-
+    //std::cout << "player" << std::endl;
+    //std::cout << "x = " << x << ", y = " << y << std::endl;
     angle = 0;
     camera_angle = 0;
     timer.scale = 0.5f;
@@ -466,7 +467,7 @@ bool Player::check_water()
 
 void Player::updateCamera(scene_structure &scene) {
 
-    float speed_turn_camera = M_PI / (16*27.0f) * 400 / ((float) fps);
+    float speed_turn_camera = M_PI / (1.8f*16*27.0f) * 400 / ((float) fps);
 
     if (moving_left) {
         camera_angle += speed_turn_camera;
@@ -507,6 +508,9 @@ void Player::updateCamera(scene_structure &scene) {
         angle = asin(scene.camera.orientation[5]);
     }
     hierarchy["body"].transform.rotation = rotation_from_axis_angle_mat3({0,0,-1}, angle);
+    // std::cout << scene.camera.orientation << std::endl;
+    // std::cout << scene.camera.scale << std::endl;
+    // std::cout << camera_angle << std::endl;
 }
 
 void Player::mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods) {
