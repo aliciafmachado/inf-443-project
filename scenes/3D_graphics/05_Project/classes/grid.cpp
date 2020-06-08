@@ -13,7 +13,6 @@ using namespace vcl;
 #define SAND 7
 #define WATER_HEIGHT 56
 #define MIN_WATER 50
-#define QTD_FLOWERS 20
 
 float evaluate_terrain_z(float u, float v, const gui_scene_structure& gui_scene);
 
@@ -43,28 +42,6 @@ void Grid::setup()
     block_textures[6] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/sand.png"),
                                              GL_REPEAT, GL_REPEAT );
 }
-
-/*bool sort_function(std::pair<int, float> i, std::pair<int, float> j) {
-    return i.second > j.second;
-}
-
-void sort_order(std::vector<vec3> &tr, vec3 cam_pos) {
-    std::vector<std::pair<int, float>> sorted;
-    for(int i = 0; i < tr.size(); i++) {
-        float dist = pow(tr[i][0] - cam_pos[0], 2) + pow(tr[i][1] - cam_pos[1], 2) 
-        + pow(tr[i][2] - cam_pos[2], 2);
-
-        sorted.push_back(std::pair<int, float> (i, dist));
-    }
-
-    std::sort(sorted.begin(), sorted.end(), sort_function);
-
-    float aux;
-    std::vector<vec3> tr_copy(tr);
-    for(int i = 0; i < tr.size(); i++) {
-        tr[i] = tr_copy[sorted[i].first];
-    }
-}*/
 
 void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& scene, bool wireframe, int fps) {
 
@@ -270,32 +247,47 @@ void Grid::generate_dungeons(gui_scene_structure gui)
 
 void Grid::create_enter_dungeon(gui_scene_structure gui) {
     bool created = false;
-    std::uniform_int_distribution<int> distrib_x(5, (int) Nx-5);
-    std::uniform_int_distribution<int> distrib_y(5, (int) Ny-5);
+    std::uniform_int_distribution<int> distrib_x(11, (int) Nx-11);
+    std::uniform_int_distribution<int> distrib_y(11, (int) Ny-11);
     std::uniform_real_distribution<float> take_block(0.0, 1.0);
     int p_x, p_y, p_z;
+    int counter = 0;
     p_x = distrib_x(gen);
     p_y = distrib_y(gen);
     p_z = surface_z[p_y][p_x];
     while(!created) {
-        if(!near_block(p_x, p_y, p_z + 1, WATER, 5, true) && blocks[p_z+1][p_y][p_x] == 0) {
+        if(!near_block(p_x, p_y, p_z + 1, WATER, 7, true) && !near_block(p_x, p_y, p_z + 1, SAND, 7, true) && blocks[p_z+1][p_y][p_x] == 0) {
             do {
                 p_z--;
-                for(int i = -4; i <= 4; i++) {
-                    for(int j = -4; j <= 4; j++) {
+                for(int i = -5; i <=5; i++) {
+                    for(int j = -5; j <= 5; j++) {
                         float value;
                         if(blocks[p_z+1][p_y][p_x] == GRASS)
                             value = 1.0;
                         else {
-                            value = 1.0 - ((float)(i * i + j * j))/16;
+                            value = 1.0 - ((float)(i * i + j * j))/32;
                         }
                         if(take_block(gen) < value) {
                             draw_blocks[p_z+1][p_y+j][p_x+i] = false;
                             blocks[p_z+1][p_y+j][p_x+i] = NONE;
+
+                            if(blocks[p_z+2][p_y+j][p_x+i] != NONE)
+                                draw_blocks[p_z+2][p_y+j][p_x+i] = true;
+                            if(blocks[p_z][p_y+j][p_x+i] != NONE)
+                                draw_blocks[p_z][p_y+j][p_x+i] = true;
+                            if(blocks[p_z+2][p_y+j][p_x+i] != NONE)
+                                draw_blocks[p_z+2][p_y+j][p_x+i] = true;
+                            if(blocks[p_z+1][p_y+j-1][p_x+i] != NONE)
+                                draw_blocks[p_z+1][p_y+j-1][p_x+i] = true;
+                            if(blocks[p_z+1][p_y+j][p_x+i+1] != NONE)
+                                draw_blocks[p_z+1][p_y+j][p_x+i+1] = true;
+                            if(blocks[p_z+1][p_y+j][p_x+i-1] != NONE)
+                                draw_blocks[p_z+1][p_y+j][p_x+i-1] = true;
                         }
                     }
                 }
-            } while(blocks[p_z][p_y][p_x] != STONE);
+                //counter++;
+            } while(blocks[p_z][p_y][p_x] != NONE); //it was stone
             created = true;
             break;
         }
@@ -427,10 +419,6 @@ bool Grid::near_block(float x, float y, float z, int block_type, int dist, bool 
         }
     }
     return near;
-}
-
-void Grid::generate_flowers(gui_scene_structure gui) {
-    // TODO
 }
 
 int Grid::position_to_block(vec3 p)

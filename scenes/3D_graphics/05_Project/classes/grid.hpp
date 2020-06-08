@@ -10,9 +10,6 @@
 class Grid
 {
 public:
-    size_t Nx_chunks = 4; // TODO
-    size_t Ny_chunks = 4;
-    size_t N_dim_chunk = 16;
     size_t Nx = 180; // Number of blocks in x
     size_t Ny = 180; // Number of blocks in y
     size_t Nz = 1000; // Number of blocks in z
@@ -34,7 +31,6 @@ public:
     void generate_dungeons(gui_scene_structure gui);
     void generate_trees(gui_scene_structure gui);
     void generate_lake(gui_scene_structure gui);
-    void generate_flowers(gui_scene_structure gui);
     void create_enter_dungeon(gui_scene_structure gui);
     void feed_translations();
     bool near_block(float x, float y, float z, int block_type, int dist, bool only_surface);
