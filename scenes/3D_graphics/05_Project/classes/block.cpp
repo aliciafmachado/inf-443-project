@@ -3,6 +3,10 @@
 using namespace vcl;
 
 mesh create_block(float l, bool simple) {
+/* Here we creare a block with a size l and 
+ * we also receive which type of block we are
+ * dealing with, so that we can apply the texture properly
+ */ 
 
     mesh block;
 
@@ -52,6 +56,7 @@ mesh create_block(float l, bool simple) {
         const float v1 = 1.0f/3.0f+e;
         const float v2 = 2.0f/3.0f-e;
         const float v3 = 1.0f;
+        
         block.texture_uv = {
                 {u2,v1}, {u2,v0}, {u1,v0}, {u1,v1},
                 {u1,v1}, {u0,v1}, {u0,v2}, {u1,v2},
@@ -63,13 +68,4 @@ mesh create_block(float l, bool simple) {
     }
 
     return block;
-}
-
-mesh create_billboard(float l) {
-    mesh billb;
-    billb.position = {{-0.2f,0,0}, { 0.2f,0,0}, { 0.2f, 0.4f,0}, {-0.2f, 0.4f,0}};
-    billb.texture_uv   = {{0,1}, {1,1}, {1,0}, {0,0}};
-    billb.connectivity = {{0,1,2}, {0,2,3}};
-
-    return billb;
 }

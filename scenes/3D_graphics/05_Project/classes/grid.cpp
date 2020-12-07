@@ -1,7 +1,13 @@
+/* Here we implement all the functions
+ * in our grid as creating the lake, the trees,
+ * the grid and the dungeons.
+ */
+
 #include "grid.hpp"
 
 using namespace vcl;
 
+// Constant values
 #define BLOCK_TYPES 7
 #define NONE 0
 #define GRASS 1
@@ -23,8 +29,6 @@ void Grid::setup()
     block_simple = create_block(step / 2, true);
     block_simple.uniform.shading = {0.4f, 0.4f, 0.8f};
     block.uniform.shading = {0.4f, 0.4f, 0.8f};
-    billboard = create_billboard(step / 2);
-    billboard.uniform.shading = {0.0f, 0.0f, 1.0f};
 
     block_textures = new GLuint[BLOCK_TYPES];
     block_textures[0] = create_texture_gpu(image_load_png("scenes/3D_graphics/05_Project/texture/grass.png"),
@@ -52,16 +56,16 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
             if(i == STONE) {
                 block.uniform.shading = {0.5f, 0.3f, 0.7f};
             }
+
             auto vec = translations[i];
             int n = vec.size();
             vec3* v = &vec[0];
+
             if(i == 7) {
                 draw_instanced(block_simple, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);
             }
             else {
                 draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);
-                /*if(wireframe)
-                    draw_instanced(block, scene.camera, shaders["mesh_array"], block_textures[i-1], v, n);*/
             }
             if(i == STONE) {
                 block.uniform.shading = {0.4f, 0.4f, 0.8f};
@@ -69,16 +73,6 @@ void Grid::frame_draw(std::map<std::string,GLuint>& shaders, scene_structure& sc
             glBindTexture(GL_TEXTURE_2D, scene.texture_white);
         }
     }
-
-    //print billboards - flowers and possibly water
-    /*int count = 0;
-    while(count < QTD_FLOWERS) {
-        billboard.uniform.transform.rotation = scene.camera.orientation;
-        billboard.uniform.transform.translation = {0.25f,0,-0.5f};
-        if()
-    }*/
-    /*if (wireframe)
-        draw(block, scene.camera, shaders["wireframe"]);*/
 }
 void Grid::create_grid(gui_scene_structure gui, std::default_random_engine g)
 {
@@ -146,10 +140,10 @@ void Grid::feed_translations() {
     for (int k=0; k<Nz; ++k){
         for (int j=0; j<Ny; ++j){
             for (int i=0; i<Nx; ++i){
+                
                 if (blocks[k][j][i] != 0 && draw_blocks[k][j][i]) {
-                    //block.uniform.transform.translation   = {i * step, j * step, k * step};
                     translations[blocks[k][j][i]].push_back({i * step, j * step, k * step});
-                    count++; // TODO readd billboards
+                    count++; 
                 }
             }
         }
@@ -421,8 +415,7 @@ bool Grid::near_block(float x, float y, float z, int block_type, int dist, bool 
     return near;
 }
 
-int Grid::position_to_block(vec3 p)
-{
+int Grid::position_to_block(vec3 p) {
     int x = p[0] / step;
     int y = p[1] / step;
     int z = p[2] / step;

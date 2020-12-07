@@ -1,3 +1,6 @@
+/* Header file of the grid
+ */
+
 #pragma once
 
 #include <algorithm>
@@ -37,7 +40,6 @@ public:
 
     vcl::mesh_drawable block;
     vcl::mesh_drawable block_simple;
-    vcl::mesh_drawable billboard;
 
     GLuint* block_textures;
 

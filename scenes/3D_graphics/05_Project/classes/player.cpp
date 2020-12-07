@@ -375,34 +375,27 @@ void Player::create_player()
 
 int Player::check_ahead()
 {
-    //std::cout << "ahead debug" << std::endl;
-
     float d = sqrt(size * size / 4.0f + body_y * body_y / 4.0f);
-    //std::cout << "d = " << d << std::endl;
     float teta = atan((size/2.0f)/(body_y/2.0f));
-    //std::cout << "teta + angle = " << teta  + angle << std::endl;
+
     vec3 center = p + vec3{d * (float)sin(angle+teta),d*(float)cos(angle+teta), 0 };
     vec3 p1 = center + vec3{0, 0, -leg_z +g->step/2.0f + error};
     vec3 p2 = center + vec3{0, 0, 0};
     vec3 p3 = center + vec3{0, 0, dist_head - error};
-    //std::cout << "p = " << p << std::endl;
-    //std::cout << "center = " << center << std::endl;
-    //std::cout << "p1 = " <<  p1 << std::endl;
-    //std::cout << "p2 = " <<  p2 << std::endl;
-    //std::cout << "p3 = " <<  p3 << std::endl;
-    //std::cout << "step = " << g.step << std::endl;
-    //std::cout << "z standing = " << (int) (p1[2] / g.step) << std::endl;
     vec3 ahead = vec3{ distance * (float) cos(angle), distance * (float)-sin(angle), 0};
-    //std::cout << "leg_z = " << leg_z << std::endl;
-    //std::cout << g.position_to_block(p1 + ahead) << std::endl;
+    
     int r;
     bool l = g->position_to_block(p1 + ahead) != 0 || g->position_to_block(p2 + ahead) != 0 || g->position_to_block(p3 + ahead) != 0;
+    
     if (!l)
         r = 0;
+    
     else if (g->position_to_block(p1 + ahead) == 4 || g->position_to_block(p2 + ahead) == 4 || g->position_to_block(p3 + ahead) == 4)
        r = 2;
+    
     else
         r = 1;
+    
     return r;
 }
 
@@ -433,15 +426,6 @@ int Player::check_down()
     float teta = atan((size/2.0f)/(body_y/2.0f));
     vec3 center = p + vec3{d * (float)sin(angle+teta),d*(float)cos(angle+teta), 0 };
     vec3 p1 = center + vec3{0, 0, -leg_z +g->step/2.0f - error};
-    //std::cout << "p = " << p << std::endl;
-    //std::cout << "center = " << center << std::endl;
-    //std::cout << "p1 = " <<  p1 << std::endl;
-    //std::cout << "p2 = " <<  p2 << std::endl;
-    //std::cout << "p3 = " <<  p3 << std::endl;
-    //std::cout << "step = " << g.step << std::endl;
-    //std::cout << "z standing = " << (p1[2] / g.step) << std::endl;
-    //std::cout << "leg_z = " << leg_z << std::endl;
-    //std::cout << g.position_to_block(p1) << std::endl;
     return g->position_to_block(p1);
 }
 
@@ -508,9 +492,6 @@ void Player::updateCamera(scene_structure &scene) {
         angle = asin(scene.camera.orientation[5]);
     }
     hierarchy["body"].transform.rotation = rotation_from_axis_angle_mat3({0,0,-1}, angle);
-    // std::cout << scene.camera.orientation << std::endl;
-    // std::cout << scene.camera.scale << std::endl;
-    // std::cout << camera_angle << std::endl;
 }
 
 void Player::mouse_click(scene_structure& scene, GLFWwindow* window, int button, int action, int mods) {
@@ -538,9 +519,4 @@ void Player::mouse_click(scene_structure& scene, GLFWwindow* window, int button,
             d += g->step/2.0f;
         }
     }
-
-    // Check if this ray intersects a position (represented by a sphere)
-    // Loop over all positions and get the intersected position (the closest one in case of multiple intersection)
-    // const float distance = norm(info.intersection-r.p); // get the closest intersection
-
 }
